@@ -45,3 +45,7 @@ FightingICE/log/out/*
 !.gitkeep
 FightingICE/debugData
 *.ini
+### MacOSX ###
+*.DS_Store
+### IntellJ IDEA for Mac###(if you need intellj setting files , you listen to Yoshiki[is02481v] )
+FightingICE/.idea/*
