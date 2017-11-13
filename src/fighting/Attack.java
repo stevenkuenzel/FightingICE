@@ -38,6 +38,19 @@ public class Attack {
 
 	private boolean downProperty;
 
+	public boolean update() {
+		if (this.speedX != 0 || this.speedY != 0) {
+			this.hitAreaNow.move(this.speedX, this.speedY);
+		}
+
+		this.nowFrame++;
+
+		if (this.nowFrame > this.active)
+			return false;
+
+		return true;
+	}
+
 	public boolean isPlayerNumber() {
 		return this.playerNumber;
 	}
