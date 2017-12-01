@@ -88,6 +88,8 @@ public class CharacterData {
 		this.hitConfirm = character.isHitConfirm();
 		this.hitCount = character.getHitCount();
 		this.lastHitFrame = character.getLastHitFrame();
+		this.inputCommands = character.getInputCommand();
+		this.processedCommands = character.getProcessedCommand();
 	}
 
 	// Copy constructor for the CharacterData class
@@ -116,6 +118,8 @@ public class CharacterData {
 		this.hitConfirm = characterData.isHitConfirm();
 		this.hitCount = characterData.getHitCount();
 		this.lastHitFrame = characterData.getLastHitFrame();
+		this.inputCommands = characterData.getInputCommand();
+		this.processedCommands = characterData.getProcessedCommand();
 	}
 
 	public boolean isPlayerNumber() {
