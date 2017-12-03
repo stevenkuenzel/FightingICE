@@ -178,7 +178,9 @@ public class Fighting {
 			// if attack's nowFrame reach end of duration, remove it.
 			LoopEffect projectile = this.projectileDeque.removeFirst();
 			if (projectile.getAttack().updateProjectileAttack()) {
-				projectile.update();
+				if (FlagSetting.enableWindow) {
+					projectile.update();
+				}
 				this.projectileDeque.addLast(projectile);
 			}
 		}
