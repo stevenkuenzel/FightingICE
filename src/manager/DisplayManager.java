@@ -33,10 +33,8 @@ public class DisplayManager {
 	 * ゲームをスタートさせる 1. OpenGL及びwindowの初期化 2. ゲームのメインループ 3. windowをクローズする
 	 */
 	public void start(GameManager game) {
-		if (enableWindow) {
-			// Window, OpenGLの初期化
-			initialize();
-		}
+		// Window, OpenGLの初期化
+		initialize();
 
 		// メインループ
 		gameLoop(game);
@@ -103,10 +101,16 @@ public class DisplayManager {
 		// Enable v-sync
 		glfwSwapInterval(1);
 
-		// Make the window visible
-		glfwShowWindow(this.window);
+		if (this.enableWindow) {
+			// Make the window visible
+			glfwShowWindow(this.window);
+			Logger.getAnonymousLogger().log(Level.INFO, "Create Window " + width + "x" + height);
+		} else {
+			// Make the window invisible
+			glfwHideWindow(this.window);
+			Logger.getAnonymousLogger().log(Level.INFO, "Disable window mode");
+		}
 
-		Logger.getAnonymousLogger().log(Level.INFO, "Create Window " + width + "x" + height);
 	}
 
 	/**
@@ -133,7 +137,6 @@ public class DisplayManager {
 		gm.initialize();
 
 		// Run the rendering loop until the user has attempted to close
-		// the window or has pressed the DELETE key.
 		while (!glfwWindowShouldClose(this.window)) {
 			// ゲーム終了の場合,リソースを解放してループを抜ける
 			if (gm.isExit()) {
@@ -170,6 +173,9 @@ public class DisplayManager {
 		// Terminate GLFW and free the error callback
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
+
+		Logger.getAnonymousLogger().log(Level.INFO, "FightingICE close");
+
 	}
 
 	public void disableWindow() {

@@ -7,6 +7,7 @@ import enumerate.GameSceneName;
 import loader.ResourceLoader;
 import manager.GraphicManager;
 import manager.InputManager;
+import setting.FlagSetting;
 import setting.GameSetting;
 
 public class Launcher extends GameScene {
@@ -41,7 +42,7 @@ public class Launcher extends GameScene {
 
 	@Override
 	public void update() {
-		if (this.count++ == 0) {
+		if (this.count++ == 0 && !FlagSetting.enableWindow) {
 			GraphicManager.getInstance().drawString("Now loading ...", GameSetting.STAGE_WIDTH / 2 - 80, 200);
 
 		} else {
@@ -64,8 +65,10 @@ public class Launcher extends GameScene {
 				this.setGameEndFlag(true);
 			}
 
-			// リソースのロード
-			ResourceLoader.getInstance().loadResource();
+			if (FlagSetting.enableWindow) {
+				// リソースのロード
+				ResourceLoader.getInstance().loadResource();
+			}
 		}
 	}
 

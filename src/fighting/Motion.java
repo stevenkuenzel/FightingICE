@@ -11,6 +11,7 @@ import enumerate.State;
 import image.CharacterActionImage;
 import image.Image;
 import manager.GraphicManager;
+import setting.FlagSetting;
 import setting.LaunchSetting;
 import struct.HitArea;
 import struct.MotionData;
@@ -214,7 +215,9 @@ public class Motion {
 		// data[33]は読み込む画像が入ったディレクトリ名
 		//
 
-		setMotionImage(characterName, playerIndex);
+		if (FlagSetting.enableWindow) {
+			setMotionImage(characterName, playerIndex);
+		}
 	}
 
 	public Motion(MotionData motionData) {

@@ -11,8 +11,8 @@ public class FlagSetting {
 	/**  */
 	public static boolean allCombinationFlag = false;
 
-	/** 背景を利用するかどうか */
-	public static boolean enableBackground = true;
+	/** ウィンドウを生成するかどうか */
+	public static boolean enableWindow = true;
 
 	/** Pythonを利用するかどうか */
 	public static boolean py4j = false;

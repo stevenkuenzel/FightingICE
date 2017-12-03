@@ -87,7 +87,9 @@ public class Play extends GameScene {
 		InputManager.getInstance().createAIcontroller();
 		InputManager.getInstance().startAI(gameData);
 
-		SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
+		if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
+			SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
+		}
 	}
 
 	@Override
@@ -112,7 +114,9 @@ public class Play extends GameScene {
 		} else {
 			Logger.getAnonymousLogger().log(Level.INFO, "Game over");
 			// BGMを止める
-			SoundManager.getInstance().stop(SoundManager.getInstance().getBackGroundMusic());
+			if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
+				SoundManager.getInstance().stop(SoundManager.getInstance().getBackGroundMusic());
+			}
 
 			Result result = new Result(this.roundResults, this.timeInfo);
 			this.setTransitionFlag(true);
@@ -143,8 +147,10 @@ public class Play extends GameScene {
 		// ダミーフレームをAIにセット
 		InputManager.getInstance().setFrameData(new FrameData(), new ScreenData());
 
-		GraphicManager.getInstance().drawQuad(0, 0, GameSetting.STAGE_WIDTH, GameSetting.STAGE_HEIGHT, 0, 0, 0, 0);
-		GraphicManager.getInstance().drawString("Waiting for Round Start", 350, 200);
+		if (FlagSetting.enableWindow) {
+			GraphicManager.getInstance().drawQuad(0, 0, GameSetting.STAGE_WIDTH, GameSetting.STAGE_HEIGHT, 0, 0, 0, 0);
+			GraphicManager.getInstance().drawString("Waiting for Round Start", 350, 200);
+		}
 	}
 
 	private void processingGame() {
@@ -166,9 +172,11 @@ public class Play extends GameScene {
 			LogWriter.getInstance().outputLog(this.dos, this.keyData, this.fighting.getCharacters());
 		}
 		// 画面をDrawerクラスで描画
-		ResourceDrawer.getInstance().drawResource(this.fighting.getCharacters(), this.fighting.getProjectileDeque(),
-				this.fighting.getHitEffectList(), this.screenData.getScreenImage(),
-				this.frameData.getRemainingTimeMilliseconds(), this.currentRound);
+		if (FlagSetting.enableWindow) {
+			ResourceDrawer.getInstance().drawResource(this.fighting.getCharacters(), this.fighting.getProjectileDeque(),
+					this.fighting.getHitEffectList(), this.screenData.getScreenImage(),
+					this.frameData.getRemainingTimeMilliseconds(), this.currentRound);
+		}
 
 	}
 

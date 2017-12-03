@@ -54,10 +54,6 @@ public class Game extends GameManager {
 			case "-t":
 				FlagSetting.trainingModeFlag = true;
 				break;
-			/*
-			 * case "-off": LogSystem.getInstance().logger.setLevel(Level.OFF);
-			 * break;
-			 */
 			case "-del":
 				DeleteFiles.getInstance().deleteFiles();
 				break;
@@ -77,9 +73,11 @@ public class Game extends GameManager {
 				LaunchSetting.invertedPlayer = Integer.parseInt(options[++i]);
 				break;
 			case "--disable-window":
+				FlagSetting.enableWindow = false;
+				FlagSetting.automationFlag = true;
+				break;
 			case "--mute":
 				FlagSetting.muteFlag = true;
-				// Handle in the main
 				break;
 			case "--json":
 				FlagSetting.jsonFlag = true;
