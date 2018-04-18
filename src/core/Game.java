@@ -61,6 +61,22 @@ public class Game extends GameManager {
 				LaunchSetting.aiNames[1] = options[++i];
 				LaunchSetting.deviceTypes[1] = InputManager.DEVICE_TYPE_AI;
 				break;
+			case "--a1s":
+				LaunchSetting.deviceTypes[0] = InputManager.DEVICE_TYPE_AI;
+				LaunchSetting.ai1sNames = new String[Integer.parseInt(options[++i])];
+				for(int j = 0;j < LaunchSetting.ai1sNames.length; j++){
+					LaunchSetting.ai1sNames[j] = options[++i];
+				}
+				FlagSetting.automationAIChage[0] = true;
+				break;
+			case "--a2s":
+				LaunchSetting.deviceTypes[1] = InputManager.DEVICE_TYPE_AI;
+				LaunchSetting.ai2sNames = new String[Integer.parseInt(options[++i])];
+				for(int j = 0;j < LaunchSetting.ai2sNames.length; j++){
+					LaunchSetting.ai2sNames[j] = options[++i];
+				}
+				FlagSetting.automationAIChage[1] = true;
+				break;
 			case "--c1":
 				LaunchSetting.characterNames[0] = getCharacterName(options[++i]);
 				break;
@@ -150,7 +166,6 @@ public class Game extends GameManager {
 
 			// -Python側で起動するときは, Pythonシーンからゲームを開始する
 		} else if (FlagSetting.py4j) {
-			System.out.println("Python");
 			Python python = new Python();
 			this.startGame(python);
 

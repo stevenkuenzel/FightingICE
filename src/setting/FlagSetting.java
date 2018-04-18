@@ -70,4 +70,9 @@ public class FlagSetting {
 	 */
 	public static boolean enableWindow = true;
 
+	/**
+	 * Automation mode時、AIを変えるかどうか(p1,p2について)
+	 */
+	public static boolean[] automationAIChage = {false,false};
+	
 }

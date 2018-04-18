@@ -205,15 +205,37 @@ public class InputManager<Data> {
 		this.ais = new AIController[DEFAULT_DEVICE_NUMBER];
 		for (int i = 0; i < this.deviceTypes.length; i++) {
 			if (this.deviceTypes[i] == DEVICE_TYPE_AI) {
-				if (this.predifinedAIs.containsKey(aiNames[i])) {
-					this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
-				} else {
-					this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+				if(FlagSetting.automationAIChage[i]){
+//					if(LaunchSetting.currentRunNumber<LaunchSetting.rotationCount){
+//						LaunchSetting.currentRunNumber++;
+//					}else{
+//						LaunchSetting.currentRunNumber = 0;
+						if((i==0 ? LaunchSetting.ai1sNames.length:LaunchSetting.ai2sNames.length)-1
+								>=LaunchSetting.currentComb){
+							aiNames[i] = i==0 ? LaunchSetting.ai1sNames[LaunchSetting.currentComb]:LaunchSetting.ai2sNames[LaunchSetting.currentComb];
+						}
+						
+						if (this.predifinedAIs.containsKey(aiNames[i])) {
+							this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
+						} else {
+							this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+						}
+//					}
+				}else{
+					if (this.predifinedAIs.containsKey(aiNames[i])) {
+						this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
+					} else {
+						this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+					}
 				}
 			} else {
 				this.ais[i] = null;
 			}
 		}
+		LaunchSetting.currentComb++;
+		if(LaunchSetting.currentComb==LaunchSetting.ai1sNames.length)
+			LaunchSetting.currentComb=0;
+		LaunchSetting.currentRunNumber++;
 	}
 
 	/**

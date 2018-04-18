@@ -1,5 +1,7 @@
 package setting;
 
+import java.util.ArrayList;
+
 import enumerate.BackgroundType;
 import python.PyGatewayServer;
 
@@ -69,5 +71,32 @@ public final class LaunchSetting {
 	 * PythonでJavaの処理を行うためのゲートウェイサーバー．
 	 */
 	public static PyGatewayServer pyGatewayServer = null;
+
+	/**
+	 * P1として用いるAI群
+	 * AutomationMode時ゲームを終了せず、P1のAIを変えたい場合に使用する
+	 */
+	public static String[] ai1sNames;
+	
+	/**
+	 * P2として用いるAI群
+	 * AutomationMode時ゲームを終了せず、P2のAIを変えたい場合に使用する
+	 */
+	public static String[] ai2sNames;
+	
+	/**
+	 * AutomationMode時AIを変える場合の現在の組み合わせ
+	 */
+	public static int currentComb = 0;
+	
+	/**
+	 * AutomationMode時AIを変える場合の周期
+	 */
+	public static int rotationCount = 1;
+	
+	/**
+	 * AutomationMode時 現在の組み合わせでの実行回数
+	 */
+	public static int currentRunNumber = 0;
 
 }
