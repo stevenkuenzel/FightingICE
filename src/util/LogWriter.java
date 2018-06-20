@@ -192,8 +192,10 @@ public class LogWriter {
 	 */
 	public String createOutputFileName(String path, String timeInfo) {
 		String mode = FlagSetting.limitHpFlag ? "HPMode" : "TimeMode";
-
-		return path + mode + "_" + LaunchSetting.aiNames[0] + "_" + LaunchSetting.aiNames[1] + "_" + timeInfo;
+		if(!FlagSetting.pmMode)
+			return path + mode + "_" + LaunchSetting.aiNames[0] + "_" + LaunchSetting.aiNames[1] + "_" + timeInfo;
+		else
+			return path + mode + "_" + LaunchSetting.pmaiName + "_" + timeInfo;
 	}
 
 	/**

@@ -14,6 +14,15 @@ Export settings
 ./src/struct/*.java
 ---------------------------------------
 
+-----PMAIToolKit.jar---------------------
+./src/aiinterface/PMAIInterface.java
+./src/aiinterface/CommandCenter.java
+./src/enumerate/Action.java
+./src/enumerate/State.java
+./src/simulator/Simulator.java
+./src/struct/*.java
+---------------------------------------
+
 -----Javadoc-----
 1. Export->Javadoc-> Next
 2. Select javadoc.exe in the bin folder in the folder where the JDK was installed -> Next

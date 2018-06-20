@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import aiinterface.AIController;
 import aiinterface.AIInterface;
+import aiinterface.PMAIController;
 import aiinterface.ThreadController;
 import enumerate.GameSceneName;
 import informationcontainer.AIContainer;
@@ -44,6 +45,11 @@ public class InputManager<Data> {
 	private AIController[] ais;
 
 	/**
+	 * PMAIコントローラを格納する配列．
+	 */
+	private PMAIController pmai;
+	
+	/**
 	 * ゲームのシーン名．
 	 */
 	private GameSceneName sceneName;
@@ -67,6 +73,11 @@ public class InputManager<Data> {
 	 * デバイスタイプとしてAIを指定する場合の定数．
 	 */
 	public final static char DEVICE_TYPE_AI = 1;
+	
+	/**
+	 * デバイスタイプとしてPMAIを指定する場合の定数．
+	 */
+	public final static char DEVICE_TYPE_PMAI = 2;
 
 	/**
 	 * 入力デバイスを指定する配列．
@@ -147,6 +158,9 @@ public class InputManager<Data> {
 			case DEVICE_TYPE_AI:
 				keys[i] = getKeyFromAI(this.ais[i]);
 				break;
+			case DEVICE_TYPE_PMAI:
+				keys[i] = getKeyFromPMAI(this.pmai,i);
+				break;
 			default:
 				break;
 			}
@@ -192,29 +206,41 @@ public class InputManager<Data> {
 	 * AIの情報を格納したコントローラをInputManagerクラスに取り込む．
 	 */
 	public void createAIcontroller() {
-		String[] aiNames = LaunchSetting.aiNames.clone();
+		if(!FlagSetting.pmMode){
+			String[] aiNames = LaunchSetting.aiNames.clone();
 
-		if (FlagSetting.allCombinationFlag) {
-			if (AIContainer.p1Index == AIContainer.p2Index) {
-				AIContainer.p1Index++;
-			}
-			aiNames[0] = AIContainer.allAINameList.get(AIContainer.p1Index);
-			aiNames[1] = AIContainer.allAINameList.get(AIContainer.p2Index);
-		}
-
-		this.deviceTypes = LaunchSetting.deviceTypes.clone();
-		this.ais = new AIController[DEFAULT_DEVICE_NUMBER];
-		for (int i = 0; i < this.deviceTypes.length; i++) {
-			if (this.deviceTypes[i] == DEVICE_TYPE_AI) {
-				if (this.predifinedAIs.containsKey(aiNames[i])) {
-					this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
-				} else {
-					this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+			if (FlagSetting.allCombinationFlag) {
+				if (AIContainer.p1Index == AIContainer.p2Index) {
+					AIContainer.p1Index++;
 				}
-			} else {
-				this.ais[i] = null;
+				aiNames[0] = AIContainer.allAINameList.get(AIContainer.p1Index);
+				aiNames[1] = AIContainer.allAINameList.get(AIContainer.p2Index);
 			}
+
+			this.deviceTypes = LaunchSetting.deviceTypes.clone();
+			this.ais = new AIController[DEFAULT_DEVICE_NUMBER];
+			for (int i = 0; i < this.deviceTypes.length; i++) {
+				if (this.deviceTypes[i] == DEVICE_TYPE_AI) {
+					if (this.predifinedAIs.containsKey(aiNames[i])) {
+						this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
+					} else {
+						this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+					}
+				} else {
+					this.ais[i] = null;
+				}
+			}
+		}else{
+			String aiName = LaunchSetting.pmaiName;
+
+			this.deviceTypes = LaunchSetting.deviceTypes.clone();
+
+			this.pmai = ResourceLoader.getInstance().loadPMAI(aiName);
+			
 		}
+		
+		
+		
 	}
 
 	/**
@@ -226,12 +252,18 @@ public class InputManager<Data> {
 	 * @see GameData
 	 */
 	public void startAI(GameData gameData) throws Py4JException{
-		for (int i = 0; i < this.deviceTypes.length; i++) {
-			if (this.ais[i] != null) {
-				this.ais[i].initialize(ThreadController.getInstance().getAIsObject(i == 0), gameData, i == 0);
-				this.ais[i].start();// start the thread
+		if(!FlagSetting.pmMode){
+			for (int i = 0; i < this.deviceTypes.length; i++) {
+				if (this.ais[i] != null) {
+					this.ais[i].initialize(ThreadController.getInstance().getAIsObject(i == 0), gameData, i == 0);
+					this.ais[i].start();// start the thread
+				}
 			}
+		}else{
+			this.pmai.initialize(ThreadController.getInstance().getAIsObject(true), gameData);
+			this.pmai.start();// start the thread
 		}
+
 	}
 
 	/**
@@ -239,13 +271,18 @@ public class InputManager<Data> {
 	 */
 	public void closeAI() {
 		this.buffer = new KeyData();
-
-		for (AIController ai : this.ais) {
-			if (ai != null)
-				ai.gameEnd();
+		if(!FlagSetting.pmMode){
+			for (AIController ai : this.ais) {
+				if (ai != null)
+					ai.gameEnd();
+			}
+		}else{
+			this.pmai.gameEnd();
 		}
+
 		this.deviceTypes = new char[DEFAULT_DEVICE_NUMBER];
 		this.ais = null;
+		this.pmai = null;
 	}
 
 	/**
@@ -265,6 +302,22 @@ public class InputManager<Data> {
 	}
 
 	/**
+	 * AIのキー入力を取得する．
+	 *
+	 * @param ai
+	 *            AIの情報を格納したコントローラ
+	 *
+	 * @return AIのキー入力．
+	 * @see AIController
+	 * @see Key
+	 */
+	private Key getKeyFromPMAI(PMAIController ai,int i) {
+		if (ai == null)
+			return new Key();
+		return ai.getInput()[i];
+	}
+	
+	/**
 	 * 引数のフレームデータ及びScreenDataを各AIコントローラにセットする．
 	 *
 	 * @param frameData
@@ -276,16 +329,26 @@ public class InputManager<Data> {
 	 * @see ScreenData
 	 */
 	public void setFrameData(FrameData frameData, ScreenData screenData) {
-		for (int i = 0; i < this.ais.length; i++) {
-			if (this.ais[i] != null) {
-				if (!frameData.getEmptyFlag()) {
-					this.ais[i].setFrameData(new FrameData(frameData));
-				} else {
-					this.ais[i].setFrameData(new FrameData());
+		if(!FlagSetting.pmMode){
+			for (int i = 0; i < this.ais.length; i++) {
+				if (this.ais[i] != null) {
+					if (!frameData.getEmptyFlag()) {
+						this.ais[i].setFrameData(new FrameData(frameData));
+					} else {
+						this.ais[i].setFrameData(new FrameData());
+					}
+					this.ais[i].setScreenData(new ScreenData(screenData));
 				}
-				this.ais[i].setScreenData(new ScreenData(screenData));
 			}
+		}else{
+			if (!frameData.getEmptyFlag()) {
+				this.pmai.setFrameData(new FrameData(frameData));
+			} else {
+				this.pmai.setFrameData(new FrameData());
+			}
+			this.pmai.setScreenData(new ScreenData(screenData));
 		}
+
 
 		synchronized (this.endFrame) {
 			try {
@@ -309,22 +372,32 @@ public class InputManager<Data> {
 	 * @see RoundResult
 	 */
 	public void sendRoundResult(RoundResult roundResult) {
-		for (AIController ai : this.ais) {
-			if (ai != null) {
-				ai.informRoundResult(roundResult);
+		if(!FlagSetting.pmMode){
+			for (AIController ai : this.ais) {
+				if (ai != null) {
+					ai.informRoundResult(roundResult);
+				}
 			}
+		}else{
+			this.pmai.informRoundResult(roundResult);
 		}
+
 	}
 
 	/**
 	 * 各AIコントローラ内に保持されているフレームデータをクリアする.
 	 */
 	public void clear() {
-		for (AIController ai : this.ais) {
-			if (ai != null) {
-				ai.clear();
+		if(!FlagSetting.pmMode){
+			for (AIController ai : this.ais) {
+				if (ai != null) {
+					ai.clear();
+				}
 			}
+		}else{
+			this.pmai.clear();
 		}
+		
 	}
 
 	/**

@@ -7,6 +7,7 @@ import informationcontainer.MenuItem;
 import loader.ResourceLoader;
 import manager.GraphicManager;
 import manager.InputManager;
+import setting.FlagSetting;
 import setting.LaunchSetting;
 import struct.Key;
 
@@ -56,11 +57,8 @@ public class HomeMenu extends GameScene {
 	public void initialize() {
 		InputManager.getInstance().setSceneName(GameSceneName.HOME_MENU);
 
-		this.menuItems = new MenuItem[] {
-				new MenuItem("FIGHT ", 50, 50, 0),
-				new MenuItem("REPLAY : ", 50, 100, 1),
-				new MenuItem("EXIT ", 50, 310, 2)
-		};
+		this.menuItems = new MenuItem[] { new MenuItem("FIGHT ", 50, 50, 0), new MenuItem("REPLAY : ", 50, 100, 1),
+				new MenuItem("EXIT ", 50, 310, 2) };
 		this.cursorPosition = 0;
 		this.replayIndex = 0;
 
@@ -94,9 +92,16 @@ public class HomeMenu extends GameScene {
 		// FIGHTの位置のとき
 		case 0:
 			if (key.A) {
-				FightingMenu fightingMenu = new FightingMenu();
-				this.setTransitionFlag(true);
-				this.setNextGameScene(fightingMenu);
+				if (!FlagSetting.pmMode) {
+					FightingMenu fightingMenu = new FightingMenu();
+					this.setTransitionFlag(true);
+					this.setNextGameScene(fightingMenu);
+				}else{
+					PMFightingMenu  fightingMenu = new PMFightingMenu();
+					this.setTransitionFlag(true);
+					this.setNextGameScene(fightingMenu);
+				}
+
 			}
 			break;
 

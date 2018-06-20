@@ -25,6 +25,11 @@ public final class LaunchSetting {
 	public static String[] aiNames = { "KeyBoard", "KeyBoard" };
 
 	/**
+	 * PuppetMaster AI名．<br>
+	 */
+	public static String pmaiName = "None";
+	
+	/**
 	 * P1,P2のキャラクター名．
 	 */
 	public static String[] characterNames = { "ZEN", "ZEN" };

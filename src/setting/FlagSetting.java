@@ -70,4 +70,9 @@ public class FlagSetting {
 	 */
 	public static boolean enableWindow = true;
 
+	/**
+	 * PuppetMasterModeで起動するかどうかのフラグ．
+	 */
+	public static boolean pmMode = false;
+	
 }

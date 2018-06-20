@@ -118,6 +118,10 @@ public class Game extends GameManager {
 			case "--err-log":
 				FlagSetting.outputErrorAndLogFlag = true;
 				break;
+			case "--pmMode":
+				FlagSetting.pmMode = true;
+
+				break;
 			default:
 				Logger.getAnonymousLogger().log(Level.WARNING,
 						"Arguments error: unknown format is exist. -> " + options[i] + " ?");

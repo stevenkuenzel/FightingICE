@@ -29,6 +29,8 @@ import javax.imageio.ImageIO;
 
 import aiinterface.AIController;
 import aiinterface.AIInterface;
+import aiinterface.PMAIController;
+import aiinterface.PMAIInterface;
 import image.CharacterActionImage;
 import image.Image;
 import manager.GraphicManager;
@@ -257,6 +259,30 @@ public class ResourceLoader {
 		}
 	}
 
+	/**
+	 * 指定されたAI名のjarファイルを読み込み、AI情報を格納したコントローラを返す．
+	 *
+	 * @param aiName
+	 *            読み込みたいAIの名前
+	 *
+	 * @return 読み込んだAIの情報を格納したコントローラ<br>
+	 *         読み込んだAIが無ければnullを返す．
+	 */
+	public PMAIController loadPMAI(String aiName) {
+		File file = new File("./data/pmai/" + aiName + ".jar");
+
+		try {
+			ClassLoader cl = URLClassLoader.newInstance(new URL[] { file.toURI().toURL() });
+			Class<?> c = cl.loadClass(aiName);
+			PMAIInterface ai = (PMAIInterface) c.newInstance();
+
+			return new PMAIController(ai);
+		} catch (MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * 指定したディレクトリに格納されている、すべてのファイルの拡張子を除いた名前を返すメソッド．<br>
 	 * 引数で読み込みたいファイルの拡張子を指定する．
