@@ -30,7 +30,7 @@ public interface PMAIInterface {
 	 * @return 0 when such initialization finishes correctly
 	 * @see GameData
 	 */
-	int initialize(GameData gd, boolean playerNumber);
+	int initialize(GameData gd);
 
 	/**
 	 * Gets information from the game status in each frame. <br>

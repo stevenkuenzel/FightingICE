@@ -138,7 +138,9 @@ public class Play extends GameScene {
 
 		try {
 			InputManager.getInstance().createAIcontroller();
+			Logger.getAnonymousLogger().log(Level.INFO, "created AI controller");
 			InputManager.getInstance().startAI(gameData);
+			Logger.getAnonymousLogger().log(Level.INFO, "succeed initialize AI controller");
 		}catch (Py4JException e){
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Fail to Initialize AI");
 			Launcher lunch = new Launcher(GameSceneName.PLAY);

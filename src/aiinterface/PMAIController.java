@@ -84,13 +84,11 @@ public class PMAIController extends Thread {
 	public void initialize(Object waitFrame, GameData gameData) throws Py4JException{
 		this.playerNumber = true;
 		this.waitObj = waitFrame;
-		this.keys = new Key[2];
-		this.keys[0] = new Key();
-		this.keys[1] = new Key();
+		this.keys = new Key[]{new Key(),new Key()};
 		this.framesData = new LinkedList<FrameData>();
 		this.clear();
 		this.isFighting = true;
-		this.ai.initialize(gameData, playerNumber);
+		this.ai.initialize(gameData);
 	}
 
 	@Override
@@ -125,10 +123,7 @@ public class PMAIController extends Thread {
 		if (this.keys != null) {
 			return this.keys;
 		} else {
-			Key[] res = new Key[2];
-			res[0] = new Key();
-			res[1] = new Key();
-			return res;
+			return new Key[]{new Key(),new Key()};
 		}
 	}
 

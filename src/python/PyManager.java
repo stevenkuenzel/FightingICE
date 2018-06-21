@@ -1,6 +1,7 @@
 package python;
 
 import aiinterface.AIInterface;
+import aiinterface.PMAIInterface;
 import gamescene.Python;
 import manager.InputManager;
 import setting.LaunchSetting;
@@ -37,6 +38,20 @@ public class PyManager {
 	 */
 	public void registerAI(String name, AIInterface ai) {
 		InputManager.getInstance().registerAI(name, ai);
+	}
+	
+	/**
+	 * Registers one python AI with a given name.<br>
+	 * Should be called before createGame (and for each call to createGame)
+	 *
+	 * @param name
+	 *            the given name of the AI
+	 * @param ai
+	 *            the instance of a class which inherits from the interface
+	 *            "gameInterface.AIInterface"
+	 */
+	public void registerPMAI(String name, PMAIInterface ai) {
+		InputManager.getInstance().registerPMAI(name, ai);
 	}
 
 	/**
@@ -99,6 +114,10 @@ public class PyManager {
 
 		return pyReplay;
 
+	}
+	
+	public PyGame createPMGame(String c1, String c2, String name1, int num) {
+		return new PyGame(this, c1, c2, name1, num);
 	}
 
 }

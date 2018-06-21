@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import aiinterface.AIController;
 import aiinterface.AIInterface;
 import aiinterface.PMAIController;
+import aiinterface.PMAIInterface;
 import aiinterface.ThreadController;
 import enumerate.GameSceneName;
 import informationcontainer.AIContainer;
@@ -60,6 +61,11 @@ public class InputManager<Data> {
 	private HashMap<String, AIInterface> predifinedAIs;
 
 	/**
+	 * Python側で定義されたPMAI名とAIInterfaceをセットで管理するマップ.
+	 */
+	private HashMap<String, PMAIInterface> predifinedPMAIs;
+	
+	/**
 	 * Default number of devices.
 	 */
 	private final static int DEFAULT_DEVICE_NUMBER = 2;
@@ -100,6 +106,7 @@ public class InputManager<Data> {
 		deviceTypes = new char[DEFAULT_DEVICE_NUMBER];
 		sceneName = GameSceneName.HOME_MENU;
 		this.predifinedAIs = new HashMap<String, AIInterface>();
+		this.predifinedPMAIs = new HashMap<String, PMAIInterface>();
 
 		for (int i = 0; i < this.deviceTypes.length; i++) {
 			this.deviceTypes[i] = DEVICE_TYPE_KEYBOARD;
@@ -145,6 +152,18 @@ public class InputManager<Data> {
 		this.predifinedAIs.put(name, ai);
 	}
 
+	/**
+	 * Pythonでの処理のために用意されたAI名とAIインタフェースをマップに追加する．
+	 *
+	 * @param name
+	 *            AI名
+	 * @param ai
+	 *            AIインタフェース
+	 */
+	public void registerPMAI(String name, PMAIInterface ai) {
+		this.predifinedPMAIs.put(name, ai);
+	}
+	
 	/**
 	 * 毎フレーム実行され，キーボード入力及びAIの入力情報を取得する．
 	 */
@@ -232,11 +251,13 @@ public class InputManager<Data> {
 			}
 		}else{
 			String aiName = LaunchSetting.pmaiName;
-
+			System.out.println(aiName);
 			this.deviceTypes = LaunchSetting.deviceTypes.clone();
-
-			this.pmai = ResourceLoader.getInstance().loadPMAI(aiName);
-			
+			if (this.predifinedPMAIs.containsKey(aiName)) {
+				this.pmai = new PMAIController(this.predifinedPMAIs.get(aiName));
+			}else{
+				this.pmai = ResourceLoader.getInstance().loadPMAI(aiName);
+			}
 		}
 		
 		

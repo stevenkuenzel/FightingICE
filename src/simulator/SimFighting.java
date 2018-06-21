@@ -108,6 +108,37 @@ public class SimFighting extends Fighting {
 	}
 
 	/**
+	 * 1フレーム分の対戦処理を行う. <br>
+	 * 処理順序は以下の通りである．<br>
+	 * <ol>
+	 * <li>キー入力を基に, アクションを実行</li>
+	 * <li>攻撃の当たり判定の処理, 及びそれに伴うキャラクターのHPなどのパラメータの更新</li>
+	 * <li>攻撃のパラメータの更新</li>
+	 * <li>キャラクターの状態の更新</li>
+	 * </ol>
+	 *
+	 * @param currentFrame
+	 *            現在のフレーム
+	 */
+	public boolean processingFightNonLimit(int currentFrame) {
+		// 1. コマンドの実行・対戦処理
+		processingCommands();
+		// 2. 当たり判定の処理
+		calculationHit(currentFrame);
+		// 3. 攻撃パラメータの更新
+		updateAttackParameter();
+		// 4. キャラクター情報の更新
+		updateCharacter();
+		
+		if(this.inputActions.get(0) != null && this.inputActions.get(0).isEmpty() && this.playerCharacters[0].isControl() && playerCharacters[0].getInputCommand().isEmpty())
+			return true;
+		else if(this.inputActions.get(1) != null && this.inputActions.get(1).isEmpty() && this.playerCharacters[1].isControl() && playerCharacters[1].getInputCommand().isEmpty())
+			return true;
+		
+		return false;
+	}
+	
+	/**
 	 * シミュレーション開始時に渡されたキー入力とアクションを基に，アクションを実行する．
 	 */
 	public void processingCommands() {

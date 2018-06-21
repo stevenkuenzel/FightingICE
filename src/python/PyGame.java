@@ -103,4 +103,46 @@ public class PyGame {
 		return this.num;
 	}
 
+	/**
+	 * The PM AI name.<br>
+	 */
+	private String aiName;
+
+	/**
+	 * 引数で指定されたデータでPyGameの初期化を行うクラスコンストラクタ．
+	 *
+	 * @param manager
+	 *            ゲームの作成やリプレイのロードといった処理を管理するマネージャー
+	 * @param c1
+	 *            P1's character name
+	 * @param c2
+	 *            P2's character name
+	 * @param name1
+	 *            PM AI name
+	 * @param num
+	 *            the number of repeat count of this game
+	 */
+	public PyGame(PyManager manager, String c1, String c2, String name1, int num) {
+		this.characterNames = new String[2];
+		this.characterNames[0] = c1;
+		this.characterNames[1] = c2;
+		this.aiName = name1;
+		this.num = num;
+
+		this.end = new Object();
+
+		// 起動情報を本体にセットする
+		LaunchSetting.deviceTypes[0] = InputManager.DEVICE_TYPE_PMAI;
+		LaunchSetting.deviceTypes[1] = InputManager.DEVICE_TYPE_PMAI;
+		LaunchSetting.characterNames[0] = c1;
+		LaunchSetting.characterNames[1] = c2;
+		LaunchSetting.pmaiName = name1;
+		LaunchSetting.repeatNumber = num;
+
+		if (LaunchSetting.repeatNumber > 1) {
+			FlagSetting.automationFlag = true;
+		}
+		FlagSetting.pmMode = true;
+	}
+	
 }
