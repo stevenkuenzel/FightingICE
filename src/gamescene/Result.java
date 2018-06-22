@@ -140,8 +140,8 @@ public class Result extends GameScene {
 	 * @return {@code true} 全AIの総当り対戦が終わった, {@code false} otherwise
 	 */
 	private boolean endRoundRobin() {
-		return (AIContainer.p1Index + 1) == AIContainer.allAINameList.size()
-				&& (AIContainer.p2Index + 1) == AIContainer.allAINameList.size();
+		return (AIContainer.p1Index) == 0
+				&& (AIContainer.p2Index) == AIContainer.allAINameList.size();
 	}
 
 	/**
@@ -164,14 +164,23 @@ public class Result extends GameScene {
 					if (++AIContainer.p1Index == AIContainer.allAINameList.size()) {
 						AIContainer.p1Index = 0;
 						AIContainer.p2Index++;
+
 					}
 
 					// 総当り対戦が終了したかどうか
 					if (!endRoundRobin()) {
+						LaunchSetting.aiNames[0] = AIContainer.allAINameList.get(AIContainer.p1Index);
+						LaunchSetting.aiNames[1] = AIContainer.allAINameList.get(AIContainer.p2Index);
 						Launcher launcher = new Launcher(GameSceneName.PLAY);
 						this.setTransitionFlag(true);
 						this.setNextGameScene(launcher);
 					} else {
+						if(FlagSetting.py4j){
+							synchronized (PyManager.python.getCurrentGame().end) {
+								PyManager.python.getCurrentGame().end.notifyAll();
+							}
+							LaunchSetting.pyGatewayServer.close();
+						}
 						this.setGameEndFlag(true);
 					}
 

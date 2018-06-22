@@ -146,7 +146,11 @@ public class Game extends GameManager {
 				if (AIContainer.allAINameList.size() < 2) {
 					Logger.getAnonymousLogger().log(Level.INFO, "Cannot launch FightingICE with Round-robin mode.");
 					this.isExitFlag = true;
+				}else{
+					LaunchSetting.aiNames[0] = AIContainer.allAINameList.get(AIContainer.p1Index);
+					LaunchSetting.aiNames[1] = AIContainer.allAINameList.get(AIContainer.p2Index);
 				}
+				
 			}
 
 			Launcher launcher = new Launcher(GameSceneName.PLAY);

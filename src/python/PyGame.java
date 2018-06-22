@@ -1,5 +1,10 @@
 package python;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import informationcontainer.AIContainer;
+import loader.ResourceLoader;
 import manager.InputManager;
 import setting.FlagSetting;
 import setting.LaunchSetting;
@@ -143,6 +148,50 @@ public class PyGame {
 			FlagSetting.automationFlag = true;
 		}
 		FlagSetting.pmMode = true;
+	}
+	
+	/**
+	 * 引数で指定されたデータでPyGameの初期化を行うクラスコンストラクタ．
+	 *
+	 * @param manager
+	 *            ゲームの作成やリプレイのロードといった処理を管理するマネージャー
+	 * @param c1
+	 *            P1's character name
+	 * @param c2
+	 *            P2's character name
+	 * @param name1
+	 *            PM AI name
+	 * @param num
+	 *            the number of repeat count of this game
+	 */
+	public PyGame(PyManager manager, String c1, String c2, int num) {
+		this.characterNames = new String[2];
+		this.characterNames[0] = c1;
+		this.characterNames[1] = c2;
+		this.num = num;
+
+		this.end = new Object();
+
+		// 起動情報を本体にセットする
+		LaunchSetting.deviceTypes[0] = InputManager.DEVICE_TYPE_AI;
+		LaunchSetting.deviceTypes[1] = InputManager.DEVICE_TYPE_AI;
+		LaunchSetting.characterNames[0] = c1;
+		LaunchSetting.characterNames[1] = c2;
+		LaunchSetting.repeatNumber = num;
+
+		if (LaunchSetting.repeatNumber > 1) {
+			FlagSetting.automationFlag = true;
+		}
+		FlagSetting.allCombinationFlag = true;
+		
+		AIContainer.allAINameList = ResourceLoader.getInstance().loadFileNames("./data/ai", ".jar");
+		AIContainer.allAINameList.addAll(InputManager.getInstance().getRegisteredAI());
+		if (AIContainer.allAINameList.size() < 2) {
+			Logger.getAnonymousLogger().log(Level.INFO, "Cannot launch FightingICE with Round-robin mode.");
+		}else{
+			LaunchSetting.aiNames[0] = AIContainer.allAINameList.get(AIContainer.p1Index);
+			LaunchSetting.aiNames[1] = AIContainer.allAINameList.get(AIContainer.p2Index);
+		}
 	}
 	
 }

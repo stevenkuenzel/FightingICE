@@ -2,6 +2,7 @@ package manager;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -160,6 +161,19 @@ public class InputManager<Data> {
 	 * @param ai
 	 *            AIインタフェース
 	 */
+	public ArrayList<String> getRegisteredAI() {
+		return new ArrayList<String>(this.predifinedAIs.keySet());
+		
+	}
+	
+	/**
+	 * Pythonでの処理のために用意されたAI名とAIインタフェースをマップに追加する．
+	 *
+	 * @param name
+	 *            AI名
+	 * @param ai
+	 *            AIインタフェース
+	 */
 	public void registerPMAI(String name, PMAIInterface ai) {
 		this.predifinedPMAIs.put(name, ai);
 	}
@@ -228,14 +242,6 @@ public class InputManager<Data> {
 		if(!FlagSetting.pmMode){
 			String[] aiNames = LaunchSetting.aiNames.clone();
 
-			if (FlagSetting.allCombinationFlag) {
-				if (AIContainer.p1Index == AIContainer.p2Index) {
-					AIContainer.p1Index++;
-				}
-				aiNames[0] = AIContainer.allAINameList.get(AIContainer.p1Index);
-				aiNames[1] = AIContainer.allAINameList.get(AIContainer.p2Index);
-			}
-
 			this.deviceTypes = LaunchSetting.deviceTypes.clone();
 			this.ais = new AIController[DEFAULT_DEVICE_NUMBER];
 			for (int i = 0; i < this.deviceTypes.length; i++) {
@@ -251,7 +257,6 @@ public class InputManager<Data> {
 			}
 		}else{
 			String aiName = LaunchSetting.pmaiName;
-			System.out.println(aiName);
 			this.deviceTypes = LaunchSetting.deviceTypes.clone();
 			if (this.predifinedPMAIs.containsKey(aiName)) {
 				this.pmai = new PMAIController(this.predifinedPMAIs.get(aiName));

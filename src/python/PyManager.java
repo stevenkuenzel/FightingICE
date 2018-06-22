@@ -119,5 +119,9 @@ public class PyManager {
 	public PyGame createPMGame(String c1, String c2, String name1, int num) {
 		return new PyGame(this, c1, c2, name1, num);
 	}
+	
+	public PyGame createGameAllComb(String c1, String c2, int num) {
+		return new PyGame(this, c1, c2, num);
+	}
 
 }
