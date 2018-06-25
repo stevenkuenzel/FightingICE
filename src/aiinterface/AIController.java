@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import informationcontainer.RoundResult;
 import py4j.Py4JException;
+import setting.FlagSetting;
 import struct.FrameData;
 import struct.GameData;
 import struct.Key;
@@ -91,7 +92,7 @@ public class AIController extends Thread {
 //		boolean isInit = false;
 //		while(!isInit)
 //		try{
-			this.ai.initialize(gameData, playerNumber);
+		this.ai.initialize(gameData, playerNumber);
 //			isInit = true;
 //		} catch (Py4JException e) {
 //			Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot Initialize AI");

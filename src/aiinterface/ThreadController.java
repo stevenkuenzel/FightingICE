@@ -1,5 +1,7 @@
 package aiinterface;
 
+import setting.FlagSetting;
+
 /**
  * AIの実行のタイミングなどのスレッド関連の処理を扱うクラス．
  */
@@ -36,7 +38,7 @@ public class ThreadController {
 	 * 各AIの処理を同時に始めるための同期用オブジェクト
 	 */
 	private Object endFrame;
-
+	
 	/**
 	 * フィールド変数を初期化するクラスコンストラクタ
 	 */
@@ -127,12 +129,17 @@ public class ThreadController {
 	 * Fastmodeのときのみ使用される．
 	 */
 	private void checkEndFrame() {
-		if (this.processedAI1 && this.processedAI2) {
+		if (!FlagSetting.pmMode && this.processedAI1 && this.processedAI2) {
 			synchronized (this.endFrame) {
 				this.endFrame.notifyAll();
 			}
 			this.processedAI1 = false;
 			this.processedAI2 = false;
+		}else if(FlagSetting.pmMode && this.processedAI1){
+			synchronized (this.endFrame) {
+				this.endFrame.notifyAll();
+			}
+			this.processedAI1 = false;
 		}
 	}
 

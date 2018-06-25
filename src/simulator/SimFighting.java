@@ -131,11 +131,11 @@ public class SimFighting extends Fighting {
 		updateCharacter();
 		
 		if(this.inputActions.get(0) != null && this.inputActions.get(0).isEmpty() && this.playerCharacters[0].isControl() && playerCharacters[0].getInputCommand().isEmpty())
-			return true;
+			return false;
 		else if(this.inputActions.get(1) != null && this.inputActions.get(1).isEmpty() && this.playerCharacters[1].isControl() && playerCharacters[1].getInputCommand().isEmpty())
-			return true;
+			return false;
 		
-		return false;
+		return true;
 	}
 	
 	/**

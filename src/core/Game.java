@@ -104,7 +104,7 @@ public class Game extends GameManager {
 				break;
 			case "--fastmode":
 				FlagSetting.fastModeFlag = true;
-				FlagSetting.automationFlag = true;
+				//FlagSetting.automationFlag = true;
 				break;
 			case "--json":
 				FlagSetting.jsonFlag = true;
@@ -118,9 +118,13 @@ public class Game extends GameManager {
 			case "--err-log":
 				FlagSetting.outputErrorAndLogFlag = true;
 				break;
-			case "--pmMode":
+			case "--pmmode":
 				FlagSetting.pmMode = true;
-
+				break;
+			case "--pmai":
+				LaunchSetting.pmaiName = options[++i];
+				LaunchSetting.deviceTypes[0] = InputManager.DEVICE_TYPE_PMAI;
+				LaunchSetting.deviceTypes[1] = InputManager.DEVICE_TYPE_PMAI;
 				break;
 			default:
 				Logger.getAnonymousLogger().log(Level.WARNING,
