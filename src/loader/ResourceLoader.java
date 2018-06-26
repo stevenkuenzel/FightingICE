@@ -394,6 +394,7 @@ public class ResourceLoader {
 
 		default:
 			loadImages(container, path);
+			GameSetting.NUM_BACKGROUND = container.size();
 			break;
 		}
 	}

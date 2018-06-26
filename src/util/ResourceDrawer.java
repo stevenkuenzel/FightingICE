@@ -93,7 +93,7 @@ public class ResourceDrawer {
 	 * Draws the background image.
 	 */
 	public void drawBackGroundImage() {
-		Image bg = GraphicManager.getInstance().getBackgroundImage().get(0);
+		Image bg = GraphicManager.getInstance().getBackgroundImage().get(GameSetting.BackgroundID);
 
 		GraphicManager.getInstance().drawImage(bg, 0, 0, GameSetting.STAGE_WIDTH, GameSetting.STAGE_HEIGHT,
 				Image.DIRECTION_RIGHT);
@@ -112,7 +112,7 @@ public class ResourceDrawer {
 		// draw players name
 		for (int i = 0; i < 2; ++i) {
 			// Draw a character to match the direction
-			BufferedImage image = playerCharacters[i].getNowImage().getBufferedImage();
+			//BufferedImage image = playerCharacters[i].getNowImage().getBufferedImage();
 			// キャラクターの向いている方向に応じて,画像を反転させる
 			//image = flipImage(image, playerCharacters[i].isFront());
 

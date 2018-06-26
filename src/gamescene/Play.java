@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +24,7 @@ import manager.SoundManager;
 import py4j.Py4JException;
 import setting.FlagSetting;
 import setting.GameSetting;
+import setting.ResourceSetting;
 import struct.FrameData;
 import struct.GameData;
 import struct.ScreenData;
@@ -134,6 +136,11 @@ public class Play extends GameScene {
 			LogWriter.getInstance().initJson(jsonName + ".json");
 		}
 
+		if(FlagSetting.enableBackground){
+			Random rnd = new Random();
+			GameSetting.BackgroundID = rnd.nextInt(GameSetting.NUM_BACKGROUND);
+		}
+		
 		GameData gameData = new GameData(this.fighting.getCharacters());
 
 		try {

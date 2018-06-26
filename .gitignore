@@ -36,6 +36,8 @@ data/ai/*
 !.gitkeep
 data/aiData/*
 !.gitkeep
+data/pmai/*
+!.gitkeep
 log/point/*
 !.gitkeep
 log/replay/*
@@ -47,6 +49,10 @@ log/json/*
 log/out/*
 !.gitkeep
 debugData
+
+!.gitkeep
+log/*
+
 *.ini
 #intellJ
 /.idea/*

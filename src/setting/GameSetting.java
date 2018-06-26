@@ -71,4 +71,12 @@ public class GameSetting {
 	 */
 	public static final int COMBO_LIMIT = 30;
 
+	/**
+	 * どの背景画像を使用するか．
+	 */
+	public static int BackgroundID = 0;
+	/**
+	 * どの背景画像を使用するか．
+	 */
+	public static int NUM_BACKGROUND = 1;
 }
