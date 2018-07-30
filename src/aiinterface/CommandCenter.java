@@ -87,7 +87,7 @@ public class CommandCenter {
 			createKeys("1");
 			break;
 		case "AIR_GUARD":
-			createKeys("7");
+			createKeys("4");
 			break;
 		case "THROW_A":
 			createKeys("4 _ A");

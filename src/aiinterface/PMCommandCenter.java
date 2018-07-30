@@ -83,7 +83,7 @@ public class PMCommandCenter {
 			createKeys("1", i);
 			break;
 		case "AIR_GUARD":
-			createKeys("7", i);
+			createKeys("4", i);
 			break;
 		case "THROW_A":
 			createKeys("4 _ A", i);
