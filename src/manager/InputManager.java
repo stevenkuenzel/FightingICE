@@ -247,9 +247,16 @@ public class InputManager<Data> {
 			for (int i = 0; i < this.deviceTypes.length; i++) {
 				if (this.deviceTypes[i] == DEVICE_TYPE_AI) {
 					if (this.predifinedAIs.containsKey(aiNames[i])) {
-						this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
+
+							this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
+
 					} else {
-						this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+						if(!aiNames[i].equals("Keyboard")){
+							this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
+						}else{
+							this.ais[i]=null;
+							this.deviceTypes[i] = DEVICE_TYPE_KEYBOARD;
+						}
 					}
 				} else {
 					this.ais[i] = null;
