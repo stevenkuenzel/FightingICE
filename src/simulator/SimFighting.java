@@ -120,7 +120,7 @@ public class SimFighting extends Fighting {
 	 * @param currentFrame
 	 *            現在のフレーム
 	 */
-	public boolean processingFightNonLimit(int currentFrame) {
+	public int processingFightNonLimit(int currentFrame) {
 		// 1. コマンドの実行・対戦処理
 		processingCommands();
 		// 2. 当たり判定の処理
@@ -130,12 +130,23 @@ public class SimFighting extends Fighting {
 		// 4. キャラクター情報の更新
 		updateCharacter();
 		
-		if(this.inputActions.get(0) != null && this.inputActions.get(0).isEmpty() && this.playerCharacters[0].isControl() && playerCharacters[0].getInputCommand().isEmpty())
-			return false;
-		else if(this.inputActions.get(1) != null && this.inputActions.get(1).isEmpty() && this.playerCharacters[1].isControl() && playerCharacters[1].getInputCommand().isEmpty())
-			return false;
-		
-		return true;
+		boolean p1isActive = this.inputActions.get(0) != null && this.inputActions.get(0).isEmpty() && this.playerCharacters[0].isControl() && playerCharacters[0].getInputCommand().isEmpty();
+		boolean p2isActive = this.inputActions.get(1) != null && this.inputActions.get(1).isEmpty() && this.playerCharacters[1].isControl() && playerCharacters[1].getInputCommand().isEmpty();
+		if(p1isActive&&p2isActive){
+			return 3;
+		}else if(p1isActive){
+			return 1;
+		}else if(p2isActive){
+			return 2;
+		}else{
+			return 0;
+		}
+//		if(this.inputActions.get(0) != null && this.inputActions.get(0).isEmpty() && this.playerCharacters[0].isControl() && playerCharacters[0].getInputCommand().isEmpty())
+//			return 1;
+//		else if(this.inputActions.get(1) != null && this.inputActions.get(1).isEmpty() && this.playerCharacters[1].isControl() && playerCharacters[1].getInputCommand().isEmpty())
+//			return 2;
+//		
+//		return 0;
 	}
 	
 	/**
@@ -144,20 +155,21 @@ public class SimFighting extends Fighting {
 	public void processingCommands() {
 
 		for (int i = 0; i < 2; i++) {
-			Deque<Key> keyList = this.inputKeys.get(i);
+			//Deque<Key> keyList = this.inputKeys.get(i);
 			Deque<Action> actList = this.inputActions.get(i);
 
-			if (keyList.size() > GameSetting.INPUT_LIMIT) {
-				keyList.removeLast();
+			//fighting.java と削除のタイミングが違うため、-1で調整
+			while (this.inputKeys.get(i).size() > GameSetting.INPUT_LIMIT -1) {
+				//keyList.removeLast();
+				this.inputKeys.get(i).removeFirst();
 			}
-
-			if (!this.playerCharacters[i].getInputCommand().isEmpty() && !this.commandCenter[i].getSkillFlag()) {
-				Deque<Key> temp = this.playerCharacters[i].getProcessedCommand();
-				temp.addLast(this.playerCharacters[i].getInputCommand().getFirst());
-
-				keyList.add(new Key(this.playerCharacters[i].getInputCommand().getFirst()));
-
-				Action act = this.commandTable.interpretationCommandFromKey(this.playerCharacters[i], temp);
+			
+			//実行予定のコマンドが存在
+			if (!this.playerCharacters[i].getInputCommand().isEmpty()) {
+				Deque<Key> inputCommand = this.playerCharacters[i].getInputCommand();
+				this.inputKeys.get(i).addLast(inputCommand.removeFirst());
+				this.playerCharacters[i].setInputCommand(inputCommand);
+				Action act = this.commandTable.interpretationCommandFromKey(this.playerCharacters[i], this.inputKeys.get(i));
 				if (ableAction(this.playerCharacters[i], act)) {
 					this.playerCharacters[i].runAction(act, true);
 				}
@@ -167,15 +179,15 @@ public class SimFighting extends Fighting {
 
 					if (ableAction(this.playerCharacters[i], actList.getFirst()) && !commandCenter[i].getSkillFlag()) {
 						this.commandCenter[i].commandCall(actList.removeFirst().name());
-						this.playerCharacters[i].setInputCommand(this.commandCenter[i].getSkillKeys());
-
 					} else if (this.playerCharacters[i].isControl() && !this.commandCenter[i].getSkillFlag()) {
+						//if the character cannot run the action, then ignore the action
 						actList.removeFirst();
 					}
 				}
 
-				this.inputKeys.get(i).add(this.commandCenter[i].getSkillKey());
-				Action act = this.commandTable.interpretationCommandFromKey(this.playerCharacters[i], keyList);
+				this.inputKeys.get(i).addLast(this.commandCenter[i].getSkillKey());
+				this.playerCharacters[i].setInputCommand(this.commandCenter[i].getSkillKeys());
+				Action act = this.commandTable.interpretationCommandFromKey(this.playerCharacters[i], this.inputKeys.get(i));
 				if (ableAction(this.playerCharacters[i], act)) {
 					this.playerCharacters[i].runAction(act, true);
 				}
@@ -286,6 +298,7 @@ public class SimFighting extends Fighting {
 		for (int i = 0; i < 2; i++) {
 			characterData[i] = new CharacterData(this.playerCharacters[i]);
 			characterData[i].setProcessedCommand(this.inputKeys.get(i));
+			//characterData[i].setInputCommand(this.playerCharacters[i].getInputCommand());
 		}
 
 		Deque<AttackData> newAttackDeque = new LinkedList<AttackData>();
@@ -294,6 +307,22 @@ public class SimFighting extends Fighting {
 		}
 
 		return new FrameData(characterData, nowFrame, round, newAttackDeque);
+	}
+	
+	public FrameData createFrameData(int nowFrame, int round, int activePlayer) {
+		CharacterData[] characterData = new CharacterData[2];
+		for (int i = 0; i < 2; i++) {
+			characterData[i] = new CharacterData(this.playerCharacters[i]);
+			characterData[i].setProcessedCommand(this.inputKeys.get(i));
+			//characterData[i].setInputCommand(this.playerCharacters[i].getInputCommand());
+		}
+
+		Deque<AttackData> newAttackDeque = new LinkedList<AttackData>();
+		for (LoopEffect loopEffect : this.projectileDeque) {
+			newAttackDeque.addLast(new AttackData(loopEffect.getAttack()));
+		}
+
+		return new FrameData(characterData, nowFrame, round, newAttackDeque, activePlayer);
 	}
 
 }

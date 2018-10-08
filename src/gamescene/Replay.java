@@ -7,6 +7,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,6 +131,11 @@ public class Replay extends GameScene {
 		this.playSpeedArray = new int[] { 0, 1, 2, 4 };
 		this.isFinished = false;
 
+		if(FlagSetting.enableBackground){
+			Random rnd = new Random();
+			GameSetting.BackgroundID = rnd.nextInt(GameSetting.NUM_BACKGROUND);
+		}
+		
 		SoundManager.getInstance().play(SoundManager.getInstance().getBackGroundMusic());
 	}
 
@@ -168,7 +174,7 @@ public class Replay extends GameScene {
 
 				GraphicManager.getInstance().drawString("PlaySpeed:" + this.playSpeedArray[this.playSpeedIndex], 50,
 						550);
-
+				System.out.println("p1hp\t"+this.fighting.getCharacters()[0].getHp()+"\tp2hp\t"+this.fighting.getCharacters()[1].getHp());
 				this.screenData = new ScreenData();
 			}
 
@@ -344,7 +350,8 @@ public class Replay extends GameScene {
 				// If it is HP mode, checkMode is less than 0 (e.g. -1)
 				if (checkMode < 0) {
 					LaunchSetting.maxHp[i] = dis.readInt();
-					LaunchSetting.characterNames[i] = GameSetting.CHARACTERS[dis.readInt()];
+					int temp = dis.readInt();
+					LaunchSetting.characterNames[i] = GameSetting.CHARACTERS[temp!=-1?temp:0];
 					FlagSetting.limitHpFlag = true;
 				} else {
 					LaunchSetting.characterNames[i] = GameSetting.CHARACTERS[checkMode];

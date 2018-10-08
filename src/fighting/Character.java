@@ -417,14 +417,14 @@ public class Character {
 
 		createAttackInstance();
 
-		if (!this.inputCommands.isEmpty()) {
-			this.processedCommands.addLast(new Key(this.inputCommands.pop()));
-		} else {
-			this.processedCommands.addLast(new Key());
-		}
-
-		if (this.processedCommands.size() > GameSetting.INPUT_LIMIT)
-			this.processedCommands.removeFirst();
+//		if (!this.inputCommands.isEmpty()) {
+//			this.processedCommands.addLast(new Key(this.inputCommands.pop()));
+//		} else {
+//			this.processedCommands.addLast(new Key());
+//		}
+//
+//		if (this.processedCommands.size() > GameSetting.INPUT_LIMIT)
+//			this.processedCommands.removeLast();
 	}
 
 	/**

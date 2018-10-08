@@ -40,6 +40,11 @@ public class FrameData {
 	private boolean emptyFlag;
 
 	/**
+	 * Not in use for normal ftg.
+	 * use in PMMode
+	 */
+	private int activePlayer = 0;
+	/**
 	 * The class constructor.
 	 */
 	public FrameData() {
@@ -262,4 +267,24 @@ public class FrameData {
 		return Math.abs((this.characterData[0].getCenterY() - this.characterData[1].getCenterY()));
 	}
 
+	
+	public FrameData(CharacterData[] characterData, int currentFrame, int currentRound,
+			Deque<AttackData> projectileData, int activePlayer) {
+		this.characterData = new CharacterData[] { characterData[0], characterData[1] };
+		this.currentFrameNumber = currentFrame;
+		this.currentRound = currentRound;
+
+		// make deep copy of the attacks list
+		this.projectileData = new LinkedList<AttackData>();
+		for (AttackData attack : projectileData) {
+			this.projectileData.add(new AttackData(attack));
+		}
+
+		this.emptyFlag = false;
+		this.activePlayer = activePlayer;
+	}
+	
+	public int getActivePlayer(){
+		return this.activePlayer;
+	}
 }

@@ -124,7 +124,7 @@ public class Fighting {
 		this.inputCommands.addLast(keyData);
 
 		// リストのサイズが上限(INPUT_LIMIT)を超えていたら, 最も古いデータを削除する
-		if (this.inputCommands.size() > GameSetting.INPUT_LIMIT) {
+		while (this.inputCommands.size() > GameSetting.INPUT_LIMIT) {
 			this.inputCommands.removeFirst();
 		}
 

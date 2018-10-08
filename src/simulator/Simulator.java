@@ -148,11 +148,13 @@ public class Simulator {
 		SimFighting simFighting = new SimFighting();
 		simFighting.initialize(tempMotionList, tempActionList, new FrameData(frameData), playerNumber);
 
-		for (int i = 0; simFighting.processingFightNonLimit(nowFrame); i++) {
+		int activePlayer = 0;
+		while (activePlayer == 0) {
+			activePlayer = simFighting.processingFightNonLimit(nowFrame);
 			nowFrame++;
 		}
 
-		return simFighting.createFrameData(nowFrame, frameData.getRound());
+		return simFighting.createFrameData(nowFrame, frameData.getRound(),activePlayer);
 	}
 
 }
