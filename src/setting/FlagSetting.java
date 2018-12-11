@@ -70,4 +70,9 @@ public class FlagSetting {
 	 */
 	public static boolean enableWindow = true;
 
+	/**
+	 * カメラ追従の有無
+	 */
+	public static boolean CAMERA = false;
+
 }

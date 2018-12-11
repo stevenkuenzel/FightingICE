@@ -66,7 +66,7 @@ public class ResourceDrawer {
 
 		GraphicManager.getInstance().resetScreen();
 
-		drawBackGroundImage();
+		drawBackGroundImage(characters);
 
 		drawCharacterImage(characters);
 
@@ -84,7 +84,7 @@ public class ResourceDrawer {
 
 		drawHitArea(characters, projectiles);
 
-		drawHitEffects(hitEffects);
+		drawHitEffects(hitEffects,characters);
 
 		GraphicManager.getInstance().disposeScreenGraphic();
 	}
@@ -92,11 +92,53 @@ public class ResourceDrawer {
 	/**
 	 * Draws the background image.
 	 */
-	public void drawBackGroundImage() {
+	public void drawBackGroundImage(Character[] characters) {
 		Image bg = GraphicManager.getInstance().getBackgroundImage().get(0);
 
-		GraphicManager.getInstance().drawImage(bg, 0, 0, GameSetting.STAGE_WIDTH, GameSetting.STAGE_HEIGHT,
-				Image.DIRECTION_RIGHT);
+		if(FlagSetting.CAMERA) {//カメラ処理
+			int distance = 0;
+			int cam = 0;//カメラワーク
+			int PlusSize = 0;//倍率や位置などを変動させる値
+
+			distance = (characters[0].getHitAreaLeft() + characters[0].getHitAreaRight()) / 2
+					- (characters[1].getHitAreaLeft() + characters[1].getHitAreaRight()) / 2;
+
+			if(distance <= 0){
+				cam = characters[0].getHitAreaLeft() + (characters[0].getHitAreaRight() - characters[0].getHitAreaLeft()) / 2
+						+ (Math.abs(distance)/2) - (GameSetting.STAGE_WIDTH / 2);
+			}else {
+				cam = characters[1].getHitAreaLeft() + (characters[1].getHitAreaRight() - characters[1].getHitAreaLeft()) / 2
+						+ (Math.abs(distance)/2) - (GameSetting.STAGE_WIDTH / 2);
+			}
+			distance = Math.abs(distance);
+
+			if((PlusSize = 480 - distance) < 0) PlusSize = 0;
+			if((distance <= 280)) PlusSize = 200;
+
+			if(cam >= PlusSize) {//背景の外側を表示させないために、右端で画面を固定
+				GraphicManager.getInstance().drawImage(bg,
+						-PlusSize, -PlusSize,
+						GameSetting.STAGE_WIDTH + PlusSize, GameSetting.STAGE_HEIGHT + PlusSize,
+						Image.DIRECTION_RIGHT);
+			}else if(cam <= 0) {//背景の外側を表示させないために、左端で画面を固定
+				GraphicManager.getInstance().drawImage(bg,
+						0, -PlusSize,
+						GameSetting.STAGE_WIDTH + PlusSize, GameSetting.STAGE_HEIGHT + PlusSize,
+						Image.DIRECTION_RIGHT);
+			}else if(cam > 0 && cam < PlusSize){//真ん中あたりにいるときのカメラ処理
+				GraphicManager.getInstance().drawImage(bg,
+						-cam, -PlusSize,
+						GameSetting.STAGE_WIDTH + PlusSize, GameSetting.STAGE_HEIGHT + PlusSize,
+						Image.DIRECTION_RIGHT);
+			}else{//P1とP2の距離が離れている場合は背景全体を表示
+				GraphicManager.getInstance().drawImage(bg, 0, 0, GameSetting.STAGE_WIDTH, GameSetting.STAGE_HEIGHT,
+						Image.DIRECTION_RIGHT);
+			}
+
+		} else {
+			GraphicManager.getInstance().drawImage(bg, 0, 0, GameSetting.STAGE_WIDTH, GameSetting.STAGE_HEIGHT,
+					Image.DIRECTION_RIGHT);
+		}
 	}
 
 	/**
@@ -112,7 +154,7 @@ public class ResourceDrawer {
 		// draw players name
 		for (int i = 0; i < 2; ++i) {
 			// Draw a character to match the direction
-			BufferedImage image = playerCharacters[i].getNowImage().getBufferedImage();
+			// BufferedImage image = playerCharacters[i].getNowImage().getBufferedImage();
 			// キャラクターの向いている方向に応じて,画像を反転させる
 			//image = flipImage(image, playerCharacters[i].isFront());
 
@@ -120,11 +162,29 @@ public class ResourceDrawer {
 					+ (playerCharacters[i].getHitAreaRight() - playerCharacters[i].getHitAreaLeft()) / 3;
 			int positionY = playerCharacters[i].getHitAreaTop() - 50;
 
-			GraphicManager.getInstance().drawString(names[i], positionX, positionY);
+			if(FlagSetting.CAMERA) {//カメラ処理
+				int distance = 0;
+				int PlusSize = 0;//倍率や位置などを変動させる値
 
-			GraphicManager.getInstance().drawImage(playerCharacters[i].getNowImage(), playerCharacters[i].getX(),
-					playerCharacters[i].getY(), playerCharacters[i].getGraphicSizeX(),
-					playerCharacters[i].getGraphicSizeY(), playerCharacters[i].isFront());
+				distance = Math.abs((playerCharacters[0].getHitAreaLeft() + playerCharacters[0].getHitAreaRight()) / 2
+						- (playerCharacters[1].getHitAreaLeft() + playerCharacters[1].getHitAreaRight()) / 2);
+
+				if((PlusSize = 480 - distance) < 0) PlusSize = 0;
+				if((distance <= 280)) PlusSize = 200;
+
+				GraphicManager.getInstance().drawString(names[i], positionX, positionY - PlusSize/2 - PlusSize/6);
+				GraphicManager.getInstance().drawImage(playerCharacters[i].getNowImage(),
+						playerCharacters[i].getX()-PlusSize / 2, playerCharacters[i].getY() - PlusSize,
+						playerCharacters[i].getGraphicSizeX() + PlusSize,
+						playerCharacters[i].getGraphicSizeY() + PlusSize,
+						playerCharacters[i].isFront());
+
+			} else {
+				GraphicManager.getInstance().drawString(names[i], positionX, positionY);
+				GraphicManager.getInstance().drawImage(playerCharacters[i].getNowImage(), playerCharacters[i].getX(),
+						playerCharacters[i].getY(), playerCharacters[i].getGraphicSizeX(),
+						playerCharacters[i].getGraphicSizeY(), playerCharacters[i].isFront());
+			}
 
 			GraphicManager.getInstance().drawImageinScreenData(playerCharacters[i].getNowImage(), playerCharacters[i].getX(),
 					playerCharacters[i].getY(), playerCharacters[i].getGraphicSizeX(),
@@ -161,9 +221,31 @@ public class ResourceDrawer {
 				BufferedImage tmpImage = image.getBufferedImage();
 				tmpImage = flipImage(tmpImage, attack.getSpeedX() >= 0);
 
-				GraphicManager.getInstance().drawImage(image, positionX, positionY, image.getWidth(), image.getHeight(),
-						attack.getSpeedX() >= 0);
+				if(FlagSetting.CAMERA) {//カメラ処理
+					int distance = 0;
+					int PlusSize = 0;//倍率や位置などを変動させる値
 
+					distance = Math.abs((characters[0].getHitAreaLeft() + characters[0].getHitAreaRight()) / 2
+							- (characters[1].getHitAreaLeft() + characters[1].getHitAreaRight()) / 2);
+
+					if((PlusSize = 480 - distance) < 0) PlusSize = 0;
+					if((distance <= 280)) PlusSize = 200;
+
+					if (attack.getSpeedX() >= 0) {
+						positionX = area.getRight() - (image.getWidth() * 5 / 6) + (PlusSize / 4) - (PlusSize / 6);
+					} else {
+						positionX = area.getLeft() - (image.getWidth() * 1 / 6) + (PlusSize / 2) - (PlusSize / 10);
+					}
+					positionY = area.getTop() - ((image.getHeight() - (area.getBottom() - area.getTop())) / 2) + (PlusSize/4);
+
+					GraphicManager.getInstance().drawImage(image, positionX-PlusSize / 2, positionY-PlusSize,
+							image.getWidth() + PlusSize / 2, image.getHeight() + PlusSize / 2,
+							attack.getSpeedX() >= 0);
+
+				} else {
+					GraphicManager.getInstance().drawImage(image, positionX, positionY, image.getWidth(), image.getHeight(),
+							attack.getSpeedX() >= 0);
+				}
 				GraphicManager.getInstance().drawImageinScreenData(image, positionX, positionY, image.getWidth(), image.getHeight(),
 						attack.getSpeedX() >= 0);
 			}
@@ -258,7 +340,7 @@ public class ResourceDrawer {
 	 *            現在のラウンド
 	 */
 	private void drawRoundNumber(int round) {
-		GraphicManager.getInstance().drawString("ROUND:" + round, 850, 10);
+		GraphicManager.getInstance().drawString("ROUND:" + round, 10, 10);
 	}
 
 	/**
@@ -291,45 +373,47 @@ public class ResourceDrawer {
 	 *            波動拳のループエフェクトを格納した両端キュー
 	 */
 	private void drawHitArea(Character[] playerCharacters, Deque<LoopEffect> projectiles) {
-		for (int i = 0; i < 2; ++i) {
+		if(!FlagSetting.CAMERA) {
+			for (int i = 0; i < 2; ++i) {
 
-			// キャラクターの当たり判定ボックスの描画
-			// P1とP2で色を変える
-			GraphicManager.getInstance().drawLineQuad(playerCharacters[i].getHitAreaLeft(),
-					playerCharacters[i].getHitAreaTop(),
-					playerCharacters[i].getHitAreaRight() - playerCharacters[i].getHitAreaLeft(),
-					playerCharacters[i].getHitAreaBottom() - playerCharacters[i].getHitAreaTop(), 0.0f + i,
-					1.0f - i * 0.35f, 0.0f, 0.0f);
+				// キャラクターの当たり判定ボックスの描画
+				// P1とP2で色を変える
+				GraphicManager.getInstance().drawLineQuad(playerCharacters[i].getHitAreaLeft(),
+						playerCharacters[i].getHitAreaTop(),
+						playerCharacters[i].getHitAreaRight() - playerCharacters[i].getHitAreaLeft(),
+						playerCharacters[i].getHitAreaBottom() - playerCharacters[i].getHitAreaTop(), 0.0f + i,
+						1.0f - i * 0.35f, 0.0f, 0.0f);
 
-			GraphicManager.getInstance().drawLineQuadinScreenData(playerCharacters[i].getHitAreaLeft(),
-					playerCharacters[i].getHitAreaTop(),
-					playerCharacters[i].getHitAreaRight() - playerCharacters[i].getHitAreaLeft(),
-					playerCharacters[i].getHitAreaBottom() - playerCharacters[i].getHitAreaTop(), 0.0f + i,
-					1.0f - i * 0.35f, 0.0f, 0.0f);
+				GraphicManager.getInstance().drawLineQuadinScreenData(playerCharacters[i].getHitAreaLeft(),
+						playerCharacters[i].getHitAreaTop(),
+						playerCharacters[i].getHitAreaRight() - playerCharacters[i].getHitAreaLeft(),
+						playerCharacters[i].getHitAreaBottom() - playerCharacters[i].getHitAreaTop(), 0.0f + i,
+						1.0f - i * 0.35f, 0.0f, 0.0f);
 
-			// 攻撃の当たり判定ボックスの描画
-			if (playerCharacters[i].getAttack() != null) {
-				HitArea area = playerCharacters[i].getAttack().getCurrentHitArea();
+				// 攻撃の当たり判定ボックスの描画
+				if (playerCharacters[i].getAttack() != null) {
+					HitArea area = playerCharacters[i].getAttack().getCurrentHitArea();
 
-				GraphicManager.getInstance().drawLineQuad(area.getLeft(), area.getTop(),
-						area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
-				GraphicManager.getInstance().drawLineQuadinScreenData(area.getLeft(), area.getTop(),
-						area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
+					GraphicManager.getInstance().drawLineQuad(area.getLeft(), area.getTop(),
+							area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
+					GraphicManager.getInstance().drawLineQuadinScreenData(area.getLeft(), area.getTop(),
+							area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
+				}
 			}
-		}
 
-		// 波動拳の当たり判定ボックスの描画
-		for (LoopEffect loopEffect : projectiles) {
-			Attack temp = loopEffect.getAttack();
+			// 波動拳の当たり判定ボックスの描画
+			for (LoopEffect loopEffect : projectiles) {
+				Attack temp = loopEffect.getAttack();
 
-			if (temp.getCurrentFrame() > temp.getStartUp()) {
-				HitArea area = temp.getCurrentHitArea();
+				if (temp.getCurrentFrame() > temp.getStartUp()) {
+					HitArea area = temp.getCurrentHitArea();
 
-				GraphicManager.getInstance().drawLineQuad(area.getLeft(), area.getTop(),
-						area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
+					GraphicManager.getInstance().drawLineQuad(area.getLeft(), area.getTop(),
+							area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
 
-				GraphicManager.getInstance().drawLineQuadinScreenData(area.getLeft(), area.getTop(),
-						area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
+					GraphicManager.getInstance().drawLineQuadinScreenData(area.getLeft(), area.getTop(),
+							area.getRight() - area.getLeft(), area.getBottom() - area.getTop(), 1.0f, 0.0f, 0.0f, 0.0f);
+				}
 			}
 		}
 	}
@@ -341,7 +425,7 @@ public class ResourceDrawer {
 	 * @param hitEffects
 	 *            ヒットエフェクトのリストを格納したリスト
 	 */
-	private void drawHitEffects(LinkedList<LinkedList<HitEffect>> hitEffects) {
+	private void drawHitEffects(LinkedList<LinkedList<HitEffect>> hitEffects, Character[] characters) {
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < hitEffects.get(i).size(); ++j) {
 				HitEffect hitEffect = hitEffects.get(i).get(j);
@@ -361,8 +445,25 @@ public class ResourceDrawer {
 					if (hitEffect.getVariationX() == 0 && hitEffect.getVariationY() == 0) {
 						positionX += 30;
 					}
-					GraphicManager.getInstance().drawImage(image, positionX, positionY, image.getWidth(),
-							image.getHeight(), i == 0 ? Image.DIRECTION_RIGHT : Image.DIRECTION_LEFT);
+
+					if(FlagSetting.CAMERA) {//カメラ処理
+						int distance = 0;
+						int PlusSize = 0;//倍率や位置などを変動させる値
+
+						distance = Math.abs((characters[0].getHitAreaLeft() + characters[0].getHitAreaRight()) / 2
+								- (characters[1].getHitAreaLeft() + characters[1].getHitAreaRight()) / 2);
+
+						if((PlusSize = 480 - distance) < 0) PlusSize = 0;
+						if((distance <= 280)) PlusSize = 200;
+
+						GraphicManager.getInstance().drawImage(image,
+								positionX - PlusSize / 2, positionY - PlusSize,
+								image.getWidth() + PlusSize, image.getHeight() + PlusSize,
+								i == 0 ? Image.DIRECTION_RIGHT : Image.DIRECTION_LEFT);
+					} else {
+						GraphicManager.getInstance().drawImage(image, positionX, positionY, image.getWidth(),
+								image.getHeight(), i == 0 ? Image.DIRECTION_RIGHT : Image.DIRECTION_LEFT);
+					}
 				}
 			}
 		}
@@ -396,3 +497,4 @@ public class ResourceDrawer {
 	}
 
 }
+
