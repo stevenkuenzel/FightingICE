@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Font;
 import java.io.File;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import manager.InputManager;
 import setting.FlagSetting;
 import setting.GameSetting;
 import setting.LaunchSetting;
+import streaming.ChatClient;
 import util.DeleteFiles;
 
 /**
@@ -126,6 +128,16 @@ public class Game extends GameManager {
 				LaunchSetting.deviceTypes[0] = InputManager.DEVICE_TYPE_PMAI;
 				LaunchSetting.deviceTypes[1] = InputManager.DEVICE_TYPE_PMAI;
 				break;
+			case "--LiveStreaming":
+				LaunchSetting.repeatNumber = -1;
+				FlagSetting.automationFlag = true;
+				break;
+			case "--chat":
+				FlagSetting.useChat = true;
+				break;
+			case "--characterSelection":
+				FlagSetting.charaSelectionMode = Integer.parseInt(options[++i]);
+				break;
 			default:
 				Logger.getAnonymousLogger().log(Level.WARNING,
 						"Arguments error: unknown format is exist. -> " + options[i] + " ?");
@@ -137,7 +149,7 @@ public class Game extends GameManager {
 	@Override
 	public void initialize() {
 		// 使用フォントの初期化
-		Font awtFont = new Font("Times New Roman", Font.BOLD, 24);
+		Font awtFont = new Font("Times New Roman", Font.PLAIN, 24);
 		GraphicManager.getInstance().setLetterFont(new LetterImage(awtFont, true));
 
 		createLogDirectories();
@@ -156,10 +168,18 @@ public class Game extends GameManager {
 				}
 				
 			}
-
-			Launcher launcher = new Launcher(GameSceneName.PLAY);
+			
+			Launcher launcher;
+			if(LaunchSetting.repeatNumber != -1){
+				launcher = new Launcher(GameSceneName.PLAY);
+			}else{
+				launcher = new Launcher(GameSceneName.STREAMING);
+				if(FlagSetting.useChat){
+					(new ChatClient()).start();
+				}
+			}
 			this.startGame(launcher);
-
+			
 			// -Python側で起動するときは, Pythonシーンからゲームを開始する
 		} else if (FlagSetting.py4j) {
 			System.out.println("Python");

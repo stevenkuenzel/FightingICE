@@ -92,6 +92,8 @@ public class Play extends GameScene {
 	 */
 	private String timeInfo;
 
+	private int endFrame;
+	
 	/**
 	 * クラスコンストラクタ．
 	 */
@@ -116,7 +118,8 @@ public class Play extends GameScene {
 		this.elapsedBreakTime = 0;
 		this.currentRound = 1;
 		this.roundStartFlag = true;
-
+		this.endFrame=-1;
+		
 		this.frameData = new FrameData();
 		this.screenData = new ScreenData();
 		this.keyData = new KeyData();
@@ -175,7 +178,11 @@ public class Play extends GameScene {
 			} else {
 				// processing
 				processingGame();
-				this.nowFrame++;
+				if(this.endFrame==-1){
+					this.nowFrame++;
+				}else if(this.endFrame%30==0){
+					this.nowFrame++;
+				}
 			}
 
 		} else {
@@ -190,6 +197,17 @@ public class Play extends GameScene {
 			this.setNextGameScene(result);
 		}
 
+		if (Keyboard.getKeyDown(GLFW_KEY_SPACE)) {
+			System.out.println(
+					"P1 x:"+this.frameData.getCharacter(true).getX()+"\n"+
+					"P2 x:"+this.frameData.getCharacter(false).getX()+"\n"+
+					"P1 Left:"+this.frameData.getCharacter(true).getLeft()+"\n"+
+					"P1 Right:"+this.frameData.getCharacter(true).getRight()+"\n"+
+					"P2 Left:"+this.frameData.getCharacter(false).getLeft()+"\n"+
+					"P2 Right:"+this.frameData.getCharacter(false).getRight()+"\n"
+					);
+		}
+		
 		if (Keyboard.getKeyDown(GLFW_KEY_ESCAPE)) {
 			if (FlagSetting.enableWindow && !FlagSetting.muteFlag) {
 				// BGMを止める
@@ -211,7 +229,8 @@ public class Play extends GameScene {
 		this.nowFrame = 0;
 		this.roundStartFlag = false;
 		this.elapsedBreakTime = 0;
-
+		this.keyData = new KeyData();
+		
 		InputManager.getInstance().clear();
 	}
 
@@ -242,8 +261,16 @@ public class Play extends GameScene {
 	 * 8. ラウンドが終了しているか判定する.<br>
 	 */
 	private void processingGame() {
-		this.keyData = new KeyData(InputManager.getInstance().getKeyData());
-		this.fighting.processingFight(this.nowFrame, this.keyData);
+		if(this.endFrame!=-1){
+			this.keyData = new KeyData();
+			if(this.endFrame%30==0){
+				this.fighting.processingFight(this.nowFrame, this.keyData);
+			}
+		}else{
+			this.keyData = new KeyData(InputManager.getInstance().getKeyData());
+			this.fighting.processingFight(this.nowFrame, this.keyData);
+		}
+		
 		this.frameData = this.fighting.createFrameData(this.nowFrame, this.currentRound);
 
 		// リプレイログ吐き出し
@@ -266,7 +293,7 @@ public class Play extends GameScene {
 			DebugActionData.getInstance().countPlayerAction(this.fighting.getCharacters());
 		}
 
-		this.screenData = new ScreenData();
+		//this.screenData = new ScreenData();
 
 		// AIにFrameDataをセット
 		InputManager.getInstance().setFrameData(this.frameData, this.screenData);
@@ -281,18 +308,25 @@ public class Play extends GameScene {
 	 * ラウンド終了時の処理を行う.
 	 */
 	private void processingRoundEnd() {
-		RoundResult roundResult = new RoundResult(this.frameData);
-		this.roundResults.add(roundResult);
+		if(this.endFrame>GameSetting.ROUND_EXTRAFRAME_NUMBER){
+			this.fighting.processingRoundEnd();
+			RoundResult roundResult = new RoundResult(this.frameData);
+			this.roundResults.add(roundResult);
 
-		// AIに結果を渡す
-		InputManager.getInstance().sendRoundResult(roundResult);
-		this.currentRound++;
-		this.roundStartFlag = true;
-
-		// P1とP2の行った各アクションの数のデータをCSVに出力する
-		if (FlagSetting.debugActionFlag) {
-			DebugActionData.getInstance().outputActionCount();
+			// AIに結果を渡す
+			InputManager.getInstance().sendRoundResult(roundResult);
+			this.currentRound++;
+			this.roundStartFlag = true;
+			this.endFrame=-1;
+			
+			// P1とP2の行った各アクションの数のデータをCSVに出力する
+			if (FlagSetting.debugActionFlag) {
+				DebugActionData.getInstance().outputActionCount();
+			}
+		}else{
+			this.endFrame++;
 		}
+
 	}
 
 	/**
@@ -315,7 +349,7 @@ public class Play extends GameScene {
 		if (FlagSetting.trainingModeFlag) {
 			return this.nowFrame == Integer.MAX_VALUE;
 		} else {
-			return this.nowFrame == GameSetting.ROUND_FRAME_NUMBER - 1;
+			return this.nowFrame >= GameSetting.ROUND_FRAME_NUMBER - 1;
 		}
 
 	}

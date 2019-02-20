@@ -50,6 +50,14 @@ class KickAI(object):
         self.inputKey.empty()
         self.cc.skillCancel()     
 
+        try:
+            print("test")
+            x = 1 / 0
+            print("test2")
+        except:
+            print(traceback.format_exc())
+            traceback.print_exc()  
+
         # Just spam kick
         self.cc.commandCall("B")
                         

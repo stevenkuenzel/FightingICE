@@ -75,4 +75,12 @@ public class FlagSetting {
 	 */
 	public static boolean pmMode = false;
 	
+	public static boolean useChat = false;
+	/**
+	 * 0:指定なし
+	 * 1:同じキャラクタ
+	 * 2:違うキャラクタ
+	 */
+	public static int charaSelectionMode = 0;
+	
 }

@@ -245,13 +245,11 @@ public class InputManager<Data> {
 			this.deviceTypes = LaunchSetting.deviceTypes.clone();
 			this.ais = new AIController[DEFAULT_DEVICE_NUMBER];
 			for (int i = 0; i < this.deviceTypes.length; i++) {
-				if (this.deviceTypes[i] == DEVICE_TYPE_AI) {
+				if (this.deviceTypes[i] == DEVICE_TYPE_AI) {					
 					if (this.predifinedAIs.containsKey(aiNames[i])) {
-
 							this.ais[i] = new AIController(this.predifinedAIs.get(aiNames[i]));
-
 					} else {
-						if(!aiNames[i].equals("Keyboard")){
+						if(!aiNames[i].equals("Keyboard")){//pythonでのKeyboard操作用
 							this.ais[i] = ResourceLoader.getInstance().loadAI(aiNames[i]);
 						}else{
 							this.ais[i]=null;
@@ -379,17 +377,15 @@ public class InputManager<Data> {
 			} else {
 				this.pmai.setFrameData(new FrameData());
 			}
-			this.pmai.setScreenData(new ScreenData(screenData));
 		}
 
-
+		
+		
 		synchronized (this.endFrame) {
 			try {
 				ThreadController.getInstance().resetAllAIsObj();
 				if (FlagSetting.fastModeFlag) {
 					this.endFrame.wait();
-				} else {
-
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

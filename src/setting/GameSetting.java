@@ -23,8 +23,8 @@ public class GameSetting {
 	/**
 	 * ゲームで使うことができるキャラクターを格納する配列．
 	 */
-	public static final String[] CHARACTERS = { "ZEN", "GARNET", "LUD" };
-
+	public static final String[] CHARACTERS = { "ZEN", "GARNET", "LUD", "NEZ", "TENRAG", "DUL"};
+	public static final String[] NORMAL_CHARACTERS = { "ZEN", "GARNET", "LUD"};
 	/**
 	 * ゲームの既定繰り返し回数を格納する配列．
 	 */
@@ -35,6 +35,11 @@ public class GameSetting {
 	 */
 	public static final int ROUND_FRAME_NUMBER = 3600;
 
+	/**
+	 * ExtraFrame
+	 */
+	public static final int ROUND_EXTRAFRAME_NUMBER = 180;
+	
 	/**
 	 * ラウンド間の休憩時間．
 	 */

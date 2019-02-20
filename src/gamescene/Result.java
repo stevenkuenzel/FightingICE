@@ -3,6 +3,7 @@ package gamescene;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import enumerate.GameSceneName;
 import informationcontainer.AIContainer;
@@ -82,6 +83,10 @@ public class Result extends GameScene {
 		if (FlagSetting.enableWindow) {
 			int[] positionX = new int[] { GameSetting.STAGE_WIDTH / 2 - 70, GameSetting.STAGE_WIDTH / 2 + 10 };
 
+			// スコアの描画
+			GraphicManager.getInstance().drawString("P1", positionX[0], 0);
+			GraphicManager.getInstance().drawString("P2", positionX[1], 0);
+			
 			for (int i = 0; i < this.roundResults.size(); i++) {
 				String[] score = new String[] { String.valueOf(this.roundResults.get(i).getRemainingHPs()[0]),
 						String.valueOf(this.roundResults.get(i).getRemainingHPs()[1]) };
@@ -154,11 +159,17 @@ public class Result extends GameScene {
 				// まだ繰り返し回数が残っている場合
 				if (FlagSetting.automationFlag && LaunchSetting.repeatedCount + 1 < LaunchSetting.repeatNumber) {
 					LaunchSetting.repeatedCount++;
-
 					Launcher launcher = new Launcher(GameSceneName.PLAY);
 					this.setTransitionFlag(true);
 					this.setNextGameScene(launcher);
 
+					
+				} else if (LaunchSetting.repeatNumber==-1){
+					//StreamingMode
+					Launcher launcher = new Launcher(GameSceneName.STREAMING);
+					this.setTransitionFlag(true);
+					this.setNextGameScene(launcher);
+					
 					// まだ全AIの総当り対戦が終わっていない場合
 				} else if (FlagSetting.allCombinationFlag) {
 					if (++AIContainer.p1Index == AIContainer.allAINameList.size()) {

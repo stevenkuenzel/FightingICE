@@ -16,6 +16,7 @@ import setting.LaunchSetting;
 import struct.AttackData;
 import struct.CharacterData;
 import struct.FrameData;
+import struct.Key;
 
 /**
  * 対戦処理及びそれに伴う攻撃やキャラクターのパラメータの更新処理を扱うクラス．
@@ -83,6 +84,14 @@ public class Fighting {
 		}
 	}
 
+	public void processingRoundEnd(){
+		this.inputCommands.clear();
+		this.playerCharacters[0].setProcessedCommand(new LinkedList<Key>());
+		this.playerCharacters[1].setProcessedCommand(new LinkedList<Key>());
+		this.playerCharacters[0].setInputCommand(new LinkedList<Key>());
+		this.playerCharacters[1].setInputCommand(new LinkedList<Key>());
+	}
+	
 	/**
 	 * P1, P2のキー入力を基に, 1フレーム分の対戦処理を行う. <br>
 	 * 処理順序は以下の通りである．<br>
@@ -100,12 +109,14 @@ public class Fighting {
 	 */
 	public void processingFight(int currentFrame, KeyData keyData) {
 
+		if(this.playerCharacters[0].getHp()>0&&this.playerCharacters[1].getHp()>0){
 		// 1. 入力されたキーを基に, アクションを実行
 		processingCommands(currentFrame, keyData);
 		// 2. 当たり判定の処理
 		calculationHit(currentFrame);
 		// 3. 攻撃のパラメータの更新
 		updateAttackParameter();
+		}
 		// 4. キャラクターの状態の更新
 		updateCharacter();
 

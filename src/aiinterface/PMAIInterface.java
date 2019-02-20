@@ -48,7 +48,7 @@ public interface PMAIInterface {
 	 *            the data that will be changed each frame
 	 * @see FrameData
 	 */
-	void getInformation(FrameData fd);
+	void getInformation(FrameData fd,int cheer);
 
 	/**
 	 * Processes the data from AI. <br>

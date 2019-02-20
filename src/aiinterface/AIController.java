@@ -41,7 +41,7 @@ public class AIController extends Thread {
 	/**
 	 * 遅れフレーム．
 	 */
-	private final static int DELAY = 15;
+	private final static int DELAY = 1;
 
 	/**
 	 * フレームデータを格納するリスト．

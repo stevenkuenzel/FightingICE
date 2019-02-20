@@ -6,6 +6,10 @@ import java.util.logging.Logger;
 
 import informationcontainer.RoundResult;
 import py4j.Py4JException;
+import setting.FlagSetting;
+import setting.GameSetting;
+import setting.LaunchSetting;
+import streaming.StreamingSetting;
 import struct.FrameData;
 import struct.GameData;
 import struct.Key;
@@ -102,12 +106,15 @@ public class PMAIController extends Thread {
 					e.printStackTrace();
 				}
 			}
-
-			this.ai.getInformation(!this.framesData.isEmpty() ? this.framesData.removeFirst() : new FrameData());
-			this.ai.getScreenData(this.screenData);
+//			this.ai.getInformation(!this.framesData.isEmpty() ? this.framesData.removeFirst() : new FrameData());
+			this.ai.getInformation(!this.framesData.isEmpty() ? this.framesData.removeFirst() : new FrameData(),StreamingSetting.getCheer());
+			StreamingSetting.resetCheer();
+			//this.ai.getScreenData(this.screenData);
 			this.ai.processing();
 			setInput(this.ai.input());
-			ThreadController.getInstance().notifyEndProcess(this.playerNumber);
+			if(FlagSetting.fastModeFlag){
+				ThreadController.getInstance().notifyEndProcess(this.playerNumber);
+			}
 		}
 
 	}
@@ -165,9 +172,9 @@ public class PMAIController extends Thread {
 	 *            対戦処理後の画面情報
 	 * @see ScreenData
 	 */
-	public synchronized void setScreenData(ScreenData screenData) {
-		this.screenData = screenData;
-	}
+//	public synchronized void setScreenData(ScreenData screenData) {
+//		this.screenData = screenData;
+//	}
 
 	/**
 	 * リストに格納してあるフレームデータを削除する．<br>

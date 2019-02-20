@@ -108,7 +108,7 @@ public class ThreadController {
 	/**
 	 * 引数に指定したキャラクターの1フレーム分の処理が終わったことをセットする．<br>
 	 * セット後に，両方のAIが処理を終えているかどうかをチェックする．<br>
-	 * Fastmodeのときのみ使用される．
+	 * endFrameはFastmodeのときのみ使用される.
 	 *
 	 * @param playerNumber
 	 *            The character's side flag.<br>
@@ -126,7 +126,7 @@ public class ThreadController {
 	/**
 	 * 現在のフレームにおいて，両AIが処理を終えているかどうかをチェックする．<br>
 	 * 終えている場合は，次のフレームの処理を開始させる．<br>
-	 * Fastmodeのときのみ使用される．
+	 * endFrameはFastmodeのときのみ使用される.
 	 */
 	private void checkEndFrame() {
 		if (!FlagSetting.pmMode && this.processedAI1 && this.processedAI2) {

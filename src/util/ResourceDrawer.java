@@ -78,11 +78,11 @@ public class ResourceDrawer {
 
 		drawTimeImage(remainingTime);
 
-		drawRoundNumber(round);
+		//drawRoundNumber(round);
 
 		drawHitCounter(characters);
 
-		drawHitArea(characters, projectiles);
+		//drawHitArea(characters, projectiles);
 
 		drawHitEffects(hitEffects);
 
@@ -126,9 +126,9 @@ public class ResourceDrawer {
 					playerCharacters[i].getY(), playerCharacters[i].getGraphicSizeX(),
 					playerCharacters[i].getGraphicSizeY(), playerCharacters[i].isFront());
 
-			GraphicManager.getInstance().drawImageinScreenData(playerCharacters[i].getNowImage(), playerCharacters[i].getX(),
-					playerCharacters[i].getY(), playerCharacters[i].getGraphicSizeX(),
-					playerCharacters[i].getGraphicSizeY(), playerCharacters[i].isFront());
+//			GraphicManager.getInstance().drawImageinScreenData(playerCharacters[i].getNowImage(), playerCharacters[i].getX(),
+//					playerCharacters[i].getY(), playerCharacters[i].getGraphicSizeX(),
+//					playerCharacters[i].getGraphicSizeY(), playerCharacters[i].isFront());
 		}
 	}
 
@@ -164,8 +164,8 @@ public class ResourceDrawer {
 				GraphicManager.getInstance().drawImage(image, positionX, positionY, image.getWidth(), image.getHeight(),
 						attack.getSpeedX() >= 0);
 
-				GraphicManager.getInstance().drawImageinScreenData(image, positionX, positionY, image.getWidth(), image.getHeight(),
-						attack.getSpeedX() >= 0);
+//				GraphicManager.getInstance().drawImageinScreenData(image, positionX, positionY, image.getWidth(), image.getHeight(),
+//						attack.getSpeedX() >= 0);
 			}
 		}
 	}
@@ -178,8 +178,8 @@ public class ResourceDrawer {
 	 */
 	private void drawHPGaugeImage(Character[] playerCharacters) {
 		if (FlagSetting.limitHpFlag) {
-			int p1Hp = (int) ((double) playerCharacters[0].getHp() / LaunchSetting.maxHp[0] * 300 * -1);
-			int p2Hp = (int) ((double) playerCharacters[1].getHp() / LaunchSetting.maxHp[1] * 300);
+			int p1Hp = Math.min((int) ((double) playerCharacters[0].getHp() / LaunchSetting.maxHp[0] * 300 * -1),0);
+			int p2Hp = Math.max((int) ((double) playerCharacters[1].getHp() / LaunchSetting.maxHp[1] * 300),0);
 
 			GraphicManager.getInstance().drawQuad(480 - 50, 75, -300, 20, 0.2f, 0.2f, 0.2f, 0.0f);
 			GraphicManager.getInstance().drawQuad(480 + 50, 75, 300, 20, 0.2f, 0.2f, 0.2f, 0.0f);
@@ -245,7 +245,7 @@ public class ResourceDrawer {
 		if (FlagSetting.trainingModeFlag) {
 			GraphicManager.getInstance().drawString("Training Mode", GameSetting.STAGE_WIDTH / 2 - 80, 10);
 		} else {
-			GraphicManager.getInstance().drawString(Integer.toString(remainingTime), GameSetting.STAGE_WIDTH / 2 - 30,
+			GraphicManager.getInstance().drawString(Integer.toString(remainingTime/1000), GameSetting.STAGE_WIDTH / 2 - 10,
 					10);
 		}
 

@@ -2,6 +2,8 @@ package loader;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.awt.RenderingHints;
+import java.awt.image.BandCombineOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.BufferedReader;
@@ -275,7 +277,7 @@ public class ResourceLoader {
 			ClassLoader cl = URLClassLoader.newInstance(new URL[] { file.toURI().toURL() });
 			Class<?> c = cl.loadClass(aiName);
 			PMAIInterface ai = (PMAIInterface) c.newInstance();
-
+			Logger.getAnonymousLogger().log(Level.INFO,	"Load " + aiName + ".jar as the PMAI");
 			return new PMAIController(ai);
 		} catch (MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
@@ -343,8 +345,11 @@ public class ResourceLoader {
 							if (j >= frameNumber) {
 								break;
 							}
-
-							actionImage[j] = loadImage(files[j].getPath());
+							if(Arrays.asList(GameSetting.NORMAL_CHARACTERS).contains(LaunchSetting.characterNames[i])){
+								actionImage[j] = loadImage(files[j].getPath());
+							}else{
+								actionImage[j] = loadDiscolorationImage(files[j].getPath());
+							}
 							num++;
 						}
 
@@ -492,7 +497,31 @@ public class ResourceLoader {
 			container.add(loadImage(file.getPath()));
 		}
 	}
+	
+	public Image loadDiscolorationImage(String filePath) {
+		BufferedImage bimg = null;
 
+		try {
+			bimg = ImageIO.read(new FileInputStream(new File(filePath)));
+			BufferedImage tmpImage = new BufferedImage(bimg.getWidth(), bimg.getHeight(),
+					BufferedImage.TYPE_INT_ARGB);
+
+			float[][] matrix = new float[][] { new float[] { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+					new float[] { 0.0f, 1.0f, 0.0f, 0.0f, 0.0f },
+					new float[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+					new float[] { 0.0f, 0.0f, 0.0f, 1.0f, 0.0f } };
+
+			BandCombineOp invert = new BandCombineOp(matrix, new RenderingHints(null));
+			invert.filter(bimg.getRaster(), tmpImage.getRaster());
+			
+			return loadTextureFromBufferedImage(tmpImage);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * アッパーの画像を読み込み、2次元配列に格納する．
 	 *
@@ -502,17 +531,17 @@ public class ResourceLoader {
 	private void loadUpperImages(String path) {
 		for (int i = 0; i < 2; i++) {
 			String tempPath = path;
-
-			switch (LaunchSetting.characterNames[i]) {
-			case "ZEN":
-				tempPath += "ZEN/";
-				break;
-			case "GARNET":
-				tempPath += "GARNET/";
-				break;
-			default:
-				tempPath += "LUD/";
-			}
+			tempPath +=(LaunchSetting.characterNames[i]+"/");
+//			switch (LaunchSetting.characterNames[i]) {
+//			case "ZEN":
+//				tempPath += "ZEN/";
+//				break;
+//			case "GARNET":
+//				tempPath += "GARNET/";
+//				break;
+//			default:
+//				tempPath += "LUD/";
+//			}
 
 			File[] files = new File(tempPath).listFiles();
 			sortByFileName(files);

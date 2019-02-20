@@ -10,14 +10,21 @@ def check_args(args):
 			GAME_NUM = int(args[i+1])
 
 def start_game():
-	manager.registerAI("KickAIPython", KickAI(gateway))
-	print("Start game")
+        try:
+                print("test")
+                x = 1 / 0
+                print("test2")
+        except:
+                print(traceback.format_exc())
+                traceback.print_exc()
+	#manager.registerAI("KickAIPython", KickAI(gateway))
+	#print("Start game")
 	
-	game = manager.createGame("ZEN", "ZEN", "Keyboard", "KickAIPython", GAME_NUM)
-	manager.runGame(game)
+	#game = manager.createGame("ZEN", "ZEN", "Keyboard", "KickAIPython", GAME_NUM)
+	#manager.runGame(game)
 	
-	print("After game")
-	sys.stdout.flush()
+	#print("After game")
+	#sys.stdout.flush()
 
 def close_gateway():
 	gateway.close_callback_server()
