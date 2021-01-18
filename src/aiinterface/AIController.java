@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import informationcontainer.RoundResult;
-import py4j.Py4JException;
 import struct.FrameData;
 import struct.GameData;
 import struct.Key;
@@ -81,7 +80,7 @@ public class AIController extends Thread {
 	 *
 	 * @see GameData
 	 */
-	public void initialize(Object waitFrame, GameData gameData, boolean playerNumber) throws Py4JException{
+	public void initialize(Object waitFrame, GameData gameData, boolean playerNumber) {
 		this.playerNumber = playerNumber;
 		this.waitObj = waitFrame;
 		this.key = new Key();
