@@ -174,7 +174,9 @@ public class Character {
 
     public int totalComboCount = 0;
 
-    public BehaviorData behaviorData;
+    public BehaviorData behaviorData = new BehaviorData();
+
+    public List<BehaviorData> roundBehaviourData = new ArrayList<>();
 
     public int maxEP = 300;
 
@@ -349,8 +351,8 @@ public class Character {
      * TODO: See content.
      */
     public void roundEnd() {
-//        saveLastRound();
-        behaviorData
+        roundBehaviourData.add(behaviorData);
+        behaviorData = new BehaviorData();
     }
 
 

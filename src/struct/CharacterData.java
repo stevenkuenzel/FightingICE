@@ -722,7 +722,7 @@ public class CharacterData {
 	 *            executing in the simulator
 	 */
 	public void setInputCommand(Deque<Key> inputCommand) {
-		this.inputCommands = new LinkedList<Key>(inputCommand);
+		this.inputCommands = new LinkedList<>(inputCommand);
 	}
 
 	/**
@@ -737,7 +737,7 @@ public class CharacterData {
 	 *            the simulator
 	 */
 	public void setProcessedCommand(Deque<Key> inputCommand) {
-		this.processedCommands = new LinkedList<Key>(inputCommand);
+		this.processedCommands = new LinkedList<>(inputCommand);
 	}
 
 }

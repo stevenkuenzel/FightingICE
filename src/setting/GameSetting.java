@@ -20,6 +20,9 @@ public class GameSetting {
      */
     public static final int FPS = 60;
 
+
+    public static int ROUND_FRAME_NUMBER = 3600;
+
 //    /**
 //     * ゲームで使うことができるキャラクターを格納する配列．
 //     */
@@ -34,7 +37,6 @@ public class GameSetting {
 //	 * 1ラウンドの総フレーム数．
 //	 */
 ////	public static final int ROUND_FRAME_NUMBER = 3600;
-//	public static int ROUND_FRAME_NUMBER = 3600;
 
 //	/**
 //	 * ラウンド間の休憩時間．

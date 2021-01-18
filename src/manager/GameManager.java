@@ -5,6 +5,8 @@ import gamescene.GameScene;
 import loader.ResourceLoader;
 import util.CharacterDiskInformation;
 
+import java.util.Random;
+
 /*
 TODO: Limit MCTS iterations.
  */
@@ -41,6 +43,9 @@ public abstract class GameManager {
 	public int NUM_OF_ROUNDS = 3;
 
 
+
+	// The Java RNG is known to be of poor quality (https://docs.oracle.com/javase/8/docs/api/java/util/Random.html). However, this is enough for its purpose within FightingICE.
+	public Random random = new Random();
 	public boolean randomInitialPositions = false;
 
 	/**

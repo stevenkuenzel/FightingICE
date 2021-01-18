@@ -1,21 +1,17 @@
 package fighting;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-
 import command.CommandTable;
 import enumerate.Action;
 import enumerate.State;
-import image.Image;
 import input.KeyData;
 import manager.GameManager;
-import manager.GraphicManager;
-import setting.FlagSetting;
 import setting.GameSetting;
 import struct.AttackData;
 import struct.CharacterData;
 import struct.FrameData;
+
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * 対戦処理及びそれに伴う攻撃やキャラクターのパラメータの更新処理を扱うクラス．
@@ -294,8 +290,6 @@ public class Fighting {
         decisionEndStage();
     }
 
-    HIER WEITER
-
     /**
      * P1とP2のキャラクターの水平方向のスピードに応じて, 相手を押す処理を行う．
      */
@@ -322,7 +316,7 @@ public class Fighting {
      */
     protected void detectionFusion() {
         if (isCollision()) {
-            int direction = 0;
+            int direction;
 
             // If first player is left
             if (this.playerCharacters[0].getHitAreaCenterX() < this.playerCharacters[1].getHitAreaCenterX()) {
@@ -388,6 +382,9 @@ public class Fighting {
         Motion nextMotion = character.getMotionList().get(nextAction.ordinal());
         Motion nowMotion = character.getMotionList().get(character.getAction().ordinal());
 
+        // TODO: This is the entry point to forbid a certain set of actions, e.g. Action.STAND_D_DF_FC:
+//        if (nextAction == Action.STAND_D_DF_FC) return false;
+
         if (character.getEnergy() < -nextMotion.getAttackStartAddEnergy()) {
             return false;
         } else if (character.isControl()) {
@@ -413,14 +410,10 @@ public class Fighting {
     protected boolean detectionHit(Character opponent, Attack attack) {
         if (attack == null || opponent.getState() == State.DOWN) {
             return false;
-        } else if (opponent.getHitAreaLeft() <= attack.getCurrentHitArea().getRight()
+        } else return opponent.getHitAreaLeft() <= attack.getCurrentHitArea().getRight()
                 && opponent.getHitAreaRight() >= attack.getCurrentHitArea().getLeft()
                 && opponent.getHitAreaTop() <= attack.getCurrentHitArea().getBottom()
-                && opponent.getHitAreaBottom() >= attack.getCurrentHitArea().getTop()) {
-            return true;
-        } else {
-            return false;
-        }
+                && opponent.getHitAreaBottom() >= attack.getCurrentHitArea().getTop();
     }
 
     /**
@@ -446,7 +439,7 @@ public class Fighting {
         CharacterData[] characterData = new CharacterData[]{new CharacterData(playerCharacters[0]),
                 new CharacterData(playerCharacters[1])};
 
-        Deque<AttackData> newAttackDeque = new LinkedList<AttackData>();
+        Deque<AttackData> newAttackDeque = new LinkedList<>();
         for (LoopEffect loopEffect : this.projectileDeque) {
             newAttackDeque.addLast(new AttackData(loopEffect.getAttack()));
         }
@@ -458,22 +451,15 @@ public class Fighting {
      * ラウンド開始時にキャラクター情報を初期化し,リストやキューの中身を空にする．
      */
     public void initRound() {
+        int maxTotalDisplacement = 260;
+        int displaceTowardsCenter = this.gameManager.randomInitialPositions ? this.gameManager.random.nextInt(maxTotalDisplacement) : 0;
+
         for (int i = 0; i < 2; i++) {
-            this.playerCharacters[i].roundInit(distance);
-            this.hitEffects.get(i).clear();
+            this.playerCharacters[i].roundInit(displaceTowardsCenter);
         }
 
         this.projectileDeque.clear();
         this.inputCommands.clear();
-    }
-
-    /**
-     * P1, P2のエフェクトのリストを返す．
-     *
-     * @return P1, P2のエフェクトのリスト
-     */
-    public LinkedList<LinkedList<HitEffect>> getHitEffectList() {
-        return new LinkedList<LinkedList<HitEffect>>(this.hitEffects);
     }
 
     /**

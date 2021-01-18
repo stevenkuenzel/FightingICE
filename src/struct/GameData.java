@@ -1,13 +1,12 @@
 package struct;
 
-import java.util.ArrayList;
-
 import fighting.Character;
 import fighting.Motion;
 import manager.GameManager;
 import setting.GameSetting;
-import setting.LaunchSetting;
 import simulator.Simulator;
+
+import java.util.ArrayList;
 
 /*
 TODO:Remove maxHPs, maxEnergies.
@@ -27,18 +26,6 @@ public class GameData {
 	 * The vertical size of the game stage.
 	 */
 	private int stageHeight;
-
-	/**
-	 * The values of both characters' HP limits.<br>
-	 * Index 0 is P1, index 1 is P2.
-	 */
-	private int[] maxHPs;
-
-	/**
-	 * The values of both characters' energy limits.<br>
-	 * Index 0 is P1, index 1 is P2.
-	 */
-	private int[] maxEnergies;
 
 	/**
 	 * The list of MotionData of both characters.<br>
@@ -78,8 +65,6 @@ public class GameData {
 	public GameData(GameManager gameManager) {
 		this.gameManager = gameManager;
 
-		this.maxHPs = new int[2];
-		this.maxEnergies = new int[2];
 		this.characterMotions = new ArrayList<>(2);
 		this.characterNames = new String[2];
 		this.aiNames = new String[2];
@@ -109,10 +94,8 @@ public class GameData {
 
 		this.stageWidth = GameSetting.STAGE_WIDTH;
 		this.stageHeight = GameSetting.STAGE_HEIGHT;
-		this.maxHPs = LaunchSetting.maxHp.clone();
-		this.maxEnergies = LaunchSetting.maxEnergy.clone();
-		this.characterNames = LaunchSetting.characterNames.clone();
-		this.aiNames = LaunchSetting.aiNames.clone();
+		this.characterNames = this.gameManager.characterNames.clone();
+		this.aiNames = this.gameManager.aiNames.clone();
 
 		this.simulator = new Simulator(this);
 	}
@@ -172,30 +155,6 @@ public class GameData {
 	 */
 	public int getStageHeight() {
 		return this.stageHeight;
-	}
-
-	/**
-	 * Returns the maximum HP of the specified player.
-	 *
-	 * @param playerNumber
-	 *            the player side's flag. {@code true} if the player is P1, or
-	 *            {@code false} if P2.
-	 * @return the maximum HP of the specified player
-	 */
-	public int getMaxHP(boolean playerNumber) {
-		return playerNumber ? this.maxHPs[0] : this.maxHPs[1];
-	}
-
-	/**
-	 * Returns the maximum energy of the specified player.
-	 *
-	 * @param playerNumber
-	 *            the player side's flag. {@code true} if the player is P1, or
-	 *            {@code false} if P2.
-	 * @return the maximum energy of the specified player
-	 */
-	public int getMaxEnergy(boolean playerNumber) {
-		return playerNumber ? this.maxEnergies[0] : this.maxEnergies[1];
 	}
 
 	/**

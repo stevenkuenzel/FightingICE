@@ -8,7 +8,6 @@ import manager.GameManager;
 import struct.FrameData;
 import struct.GameData;
 
-import java.io.DataOutputStream;
 import java.util.ArrayList;
 
 /*
@@ -85,7 +84,7 @@ public class Play extends GameScene {
         this.gameManager.inputManager.setSceneName(GameSceneName.PLAY);
 
         this.fighting = new Fighting();
-        this.fighting.initialize();
+        this.fighting.initialize(this.gameManager);
 
         this.nowFrame = 0;
         this.elapsedBreakTime = 0;
@@ -111,7 +110,8 @@ public class Play extends GameScene {
             if (this.roundStartFlag) {
                 initRound();
 
-            } else if (this.elapsedBreakTime < 1) {
+            } else if (this.elapsedBreakTime < 1) { // Skips the break time.
+
 //			} else if (this.elapsedBreakTime < GameSetting.BREAKTIME_FRAME_NUMBER) {
                 // break time
                 processingBreakTime();
