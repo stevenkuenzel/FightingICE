@@ -22,7 +22,8 @@ public abstract class GameManager {
 	 *
 	 * @see GameScene
 	 */
-	protected GameScene currentGameScene;
+	public GameScene currentGameScene;
+//	protected GameScene currentGameScene;
 
 	/**
 	 * ゲームの終了要求があったかどうかを表すフラグ．
