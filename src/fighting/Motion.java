@@ -1,18 +1,6 @@
 package fighting;
 
-import java.awt.RenderingHints;
-import java.awt.image.BandCombineOp;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import enumerate.State;
-import image.CharacterActionImage;
-import image.Image;
-import manager.GraphicManager;
-import setting.FlagSetting;
-import setting.LaunchSetting;
 import struct.HitArea;
 import struct.MotionData;
 
@@ -180,22 +168,14 @@ public class Motion {
 	 */
 	private boolean landingFlag;
 
-	/**
-	 * The list of data structure for image.
-	 */
-	private ArrayList<Image> imageList;
 
 	/**
 	 * 指定されたデータでMotionクラスのインスタンスを生成するクラスコンストラクタ．
 	 *
 	 * @param data
 	 *            Motion.csvから読み込んだキャラクターのパラメータ
-	 * @param characterName
-	 *            キャラクターの名前
-	 * @param playerIndex
-	 *            プレイヤー番号(0:P1 1:P2)
 	 */
-	public Motion(String[] data, String characterName, int playerIndex) {
+	public Motion(String[] data) {
 		this.actionName = data[0];
 		this.frameNumber = Integer.valueOf(data[1]);
 		this.speedX = Integer.valueOf(data[2]);
@@ -225,11 +205,6 @@ public class Motion {
 		this.motionLevel = Integer.valueOf(data[30]);
 		this.control = Boolean.valueOf(data[31]);
 		this.landingFlag = Boolean.valueOf(data[32]);
-		// data[33]は読み込む画像が入ったディレクトリ名
-		//
-		if (FlagSetting.enableWindow) {
-			setMotionImage(characterName, playerIndex);
-		}
 	}
 
 	/**
@@ -272,64 +247,6 @@ public class Motion {
 		// 画像は読み込まない
 	}
 
-	/**
-	 * キャラクターの各モーションに対応するキャラクター画像を設定する．
-	 *
-	 * @param characterName
-	 *            キャラクターの名前
-	 * @param playerIndex
-	 *            プレイヤー番号(0:P1 1:P2)
-	 */
-	private void setMotionImage(String characterName, int playerIndex) {
-		this.imageList = new ArrayList<Image>();
-		ArrayList<CharacterActionImage> temp = GraphicManager.getInstance().getCharacterImageContainer();
-		int index = temp.indexOf(new CharacterActionImage(characterName, this.actionName));
-
-		if (index == -1) {
-			Logger.getAnonymousLogger().log(Level.WARNING, "There is no character graphic according to the action");
-
-		} else {
-			// アクション名に対応する画像を読み込む
-			Image[] image = temp.get(index).getActionImage();
-
-			for (Image img : image) {
-				if (LaunchSetting.characterNames[0].equals(LaunchSetting.characterNames[1])) {
-					// 画素の反転
-					if (LaunchSetting.invertedPlayer == playerIndex + 1) {
-						Logger.getAnonymousLogger().log(Level.INFO,
-								"Inverting all character images of P" + playerIndex + 1);
-						img = invert(img);
-					}
-				}
-				this.imageList.add(img);
-			}
-		}
-	}
-
-	/**
-	 * 画像の画素情報を反転させる．
-	 *
-	 * @param image
-	 *            入力画像
-	 * @return 反転された画像
-	 * @see Image
-	 */
-	private Image invert(Image image) {
-		BufferedImage temp = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		//temp.setData(image.getBufferedImage().getData());
-		//BufferedImage invertedImage = image.getBufferedImage();
-
-		float[][] matrix = new float[][] {
-			new float[] { -1.0f, 0.0f, 0.0f, 0.0f, 255.0f },
-			new float[] { 0.0f, -1.0f, 0.0f, 0.0f, 255.0f },
-			new float[] { 0.0f, 0.0f, -1.0f, 0.0f, 255.0f },
-			new float[] { 0.0f, 0.0f, 0.0f, 1.0f, 0.0f } };
-
-		BandCombineOp invert = new BandCombineOp(matrix, new RenderingHints(null));
-		invert.filter(image.getBufferedImage().getRaster(), temp.getRaster());
-
-		return new Image(image.getTextureId(),temp);
-	}
 
 	/**
 	 * Returns the name of this motion.
@@ -610,17 +527,6 @@ public class Motion {
 	 */
 	public boolean isLandingFlag() {
 		return this.landingFlag;
-	}
-
-	/**
-	 * Returns the current image of the character.
-	 *
-	 * @param nowFrame
-	 *            the current frame
-	 * @return the current image of the character
-	 */
-	public Image getImage(int nowFrame) {
-		return imageList.get((frameNumber - nowFrame) % frameNumber);
 	}
 
 	/**

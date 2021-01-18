@@ -3,7 +3,6 @@ package aiinterface;
 import struct.FrameData;
 import struct.GameData;
 import struct.Key;
-import struct.ScreenData;
 
 /**
  * The interface that defines the methods to implement in AI.
@@ -91,14 +90,5 @@ public interface AIInterface {
 	 *            the elapsed frames from the start to the end of the round
 	 */
 	void roundEnd(int p1Hp, int p2Hp, int frames);
-
-	/**
-	 * Gets the screen information in each frame.
-	 *
-	 * @param sd
-	 *            the screen information such as the pixel data
-	 */
-	default void getScreenData(ScreenData sd) {
-	};
 
 }

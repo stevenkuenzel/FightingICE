@@ -1,7 +1,5 @@
 package fighting;
 
-import image.Image;
-
 /**
  * 波動拳のエフェクトを管理するクラス.<br>
  * Effectクラスを継承している.
@@ -13,11 +11,9 @@ public class LoopEffect extends Effect {
 	 *
 	 * @param attack
 	 *            攻撃オブジェクト
-	 * @param hitImages
-	 *            攻撃オブジェクトに対応する全てのエフェクト画像
 	 */
-	public LoopEffect(Attack attack, Image[] hitImages) {
-		super(attack, hitImages);
+	public LoopEffect(Attack attack) {
+		super(attack);
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package gamescene;
 
 import enumerate.GameSceneName;
+import manager.GameManager;
 
 /**
  * LauncherやPlayといった,ゲームシーンの共通部分をまとめた親クラス．
@@ -28,28 +29,20 @@ public class GameScene {
 	protected GameScene nextGameScene;
 
 	/**
-	 * クラスコンストラクタ．
+	 * The GameManger.
 	 */
-	public GameScene() {
+	public GameManager gameManager;
+
+
+	public GameScene(GameManager gameManager) {
 		this.gameSceneName = GameSceneName.HOME_MENU;
 		this.isGameEndFlag = false;
 		this.isTransitionFlag = false;
 		this.nextGameScene = null;
+
+		this.gameManager = gameManager;
 	}
 
-	/**
-	 * 引数で指定されたgameSceneインスタンスのコピーを生成するクラスコンストラクタ．
-	 *
-	 * @param gameScene
-	 *            指定されたゲームシーン
-	 */
-	public GameScene(GameScene gameScene) {
-		this.gameSceneName = gameScene.getCurrentSceneName();
-		this.isGameEndFlag = gameScene.isGameEndFlag;
-		this.isTransitionFlag = gameScene.isTransitionFlag;
-		this.nextGameScene = gameScene.getNextGameScene();
-
-	}
 
 	/**
 	 * 引数で指定されたデータでインスタンスを作成するクラスコンストラクタ．

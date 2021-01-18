@@ -1,7 +1,5 @@
 package fighting;
 
-import image.Image;
-
 /**
  * 攻撃が当たったときに表示するエフェクト及びアッパー攻撃のエフェクトを管理するクラス.<br>
  * Effectクラスを継承している.
@@ -29,8 +27,6 @@ public class HitEffect extends Effect {
 	 *
 	 * @param attack
 	 *            攻撃オブジェクト
-	 * @param hitImages
-	 *            攻撃オブジェクトに対応する全てのエフェクト画像
 	 * @param isHit
 	 *            the boolean value whether the attack conducted by the
 	 *            character hits the opponent or not
@@ -40,8 +36,8 @@ public class HitEffect extends Effect {
 	 * @param framesPerImage
 	 *            1枚のエフェクト画像の表示フレーム数
 	 */
-	public HitEffect(Attack attack, Image[] hitImages, boolean isHit, boolean variation, int framesPerImage) {
-		super(attack, hitImages, framesPerImage);
+	public HitEffect(Attack attack, boolean isHit, boolean variation, int framesPerImage) {
+		super(attack, framesPerImage);
 		this.initialize(isHit, variation);
 	}
 
@@ -50,8 +46,6 @@ public class HitEffect extends Effect {
 	 *
 	 * @param attack
 	 *            攻撃オブジェクト
-	 * @param hitImages
-	 *            攻撃オブジェクトに対応する全てのエフェクト画像
 	 * @param isHit
 	 *            the boolean value whether the attack conducted by the
 	 *            character hits the opponent or not
@@ -59,8 +53,8 @@ public class HitEffect extends Effect {
 	 * @param variation
 	 *            エフェクト画像の表示位置をvariationX, variationYに従って変動させるかどうか
 	 */
-	public HitEffect(Attack attack, Image[] hitImages, boolean isHit, boolean variation) {
-		super(attack, hitImages);
+	public HitEffect(Attack attack, boolean isHit, boolean variation) {
+		super(attack);
 		this.initialize(isHit, variation);
 	}
 
@@ -69,14 +63,12 @@ public class HitEffect extends Effect {
 	 *
 	 * @param attack
 	 *            攻撃オブジェクト
-	 * @param hitImages
-	 *            攻撃オブジェクトに対応する全てのエフェクト画像
 	 * @param isHit
 	 *            the boolean value whether the attack conducted by the
 	 *            character hits the opponent or not
 	 */
-	public HitEffect(Attack attack, Image[] hitImages, boolean isHit) {
-		this(attack, hitImages, isHit, true);
+	public HitEffect(Attack attack,  boolean isHit) {
+		this(attack, isHit, true);
 	}
 
 	/**

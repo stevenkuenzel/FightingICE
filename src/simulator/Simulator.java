@@ -71,15 +71,15 @@ public class Simulator {
 			int simulationLimit) {
 
 		// Creates deep copy of each action's list
-		ArrayList<Deque<Action>> tempActionList = new ArrayList<Deque<Action>>(2);
+		ArrayList<Deque<Action>> tempActionList = new ArrayList<>(2);
 		Deque<Action> tempP1Act = ((playerNumber ? myAct : oppAct) == null) ? null
-				: new LinkedList<Action>(playerNumber ? myAct : oppAct);
+				: new LinkedList<>(playerNumber ? myAct : oppAct);
 		Deque<Action> tempP2Act = ((!playerNumber ? myAct : oppAct) == null) ? null
-				: new LinkedList<Action>(!playerNumber ? myAct : oppAct);
+				: new LinkedList<>(!playerNumber ? myAct : oppAct);
 		tempActionList.add(tempP1Act);
 		tempActionList.add(tempP2Act);
 
-		ArrayList<ArrayList<Motion>> tempMotionList = new ArrayList<ArrayList<Motion>>(2);
+		ArrayList<ArrayList<Motion>> tempMotionList = new ArrayList<>(2);
 //		ArrayList<Motion> p1MotionData = this.gameData.getMotion(playerNumber ? true : false);
 //		ArrayList<Motion> p2MotionData = this.gameData.getMotion(!playerNumber ? true : false);
 		ArrayList<Motion> p1MotionData = this.gameData.getMotion(true);

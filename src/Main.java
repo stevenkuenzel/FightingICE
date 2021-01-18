@@ -1,5 +1,6 @@
 import core.Game;
 import manager.DisplayManager;
+import util.CharacterDiskInformation;
 
 /**
  * FightingICEのメインメソッドを持つクラス．
@@ -14,11 +15,7 @@ public class Main {
 	 *            起動時に入力した全ての引数を格納した配列
 	 */
 	public static void main(String[] options) {
-		Game game = new Game();
-		game.setOptions(options);
-		DisplayManager displayManager = new DisplayManager();
+		Game game = new Game("ANNBot1", "MctsAi", new CharacterDiskInformation());
 
-		// ゲームの開始
-		displayManager.start(game);
 	}
 }

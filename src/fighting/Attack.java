@@ -1,5 +1,6 @@
 package fighting;
 
+import enumerate.Action;
 import struct.AttackData;
 import struct.HitArea;
 import struct.MotionData;
@@ -134,6 +135,23 @@ public class Attack {
 	 * {@code true} if this skill can push down, {@code false} otherwise.
 	 */
 	private boolean downProp;
+
+
+	/**
+	 * Unique id. -1 if this is not an attack.
+	 */
+	public int id;
+	// Success properties.
+	private boolean hitOpponent = false;
+	private boolean wasBlocked = false;
+	private boolean isDestroyed = false;
+
+	/**
+	 * The action that started this attack.
+	 */
+	public Action action;
+
+
 
 	/**
 	 * Class constructor．
@@ -329,10 +347,11 @@ public class Attack {
 	 *            the character's facing direction. {@code true} if the
 	 *            character is facing right, {@code false} if left.
 	 */
-	public void initialize(boolean playerNumber, int x, int y, int size, boolean direction) {
+	public void initialize(boolean playerNumber, int x, int y, int size, boolean direction, int id) {
 		setParameters(x, y, size, direction);
 		this.playerNumber = playerNumber;
 		this.currentFrame = 0;
+		this.id = id;
 	}
 
 	/**
@@ -857,5 +876,35 @@ public class Attack {
 	public void setSettingSpeedY(int settingSpeedY) {
 		this.settingSpeedY = settingSpeedY;
 	}
+
+
+
+
+	public void setHit()
+	{
+		this.hitOpponent = true;
+	}
+
+	public void setDestroyed()
+	{
+		this.isDestroyed = true;
+	}
+	public void setBlocked()
+	{
+		this.wasBlocked = true;
+	}
+	public boolean hit()
+	{
+		return hitOpponent;
+	}
+	public boolean blocked()
+	{
+		return wasBlocked;
+	}
+	public boolean destroyed()
+	{
+		return isDestroyed;
+	}
+
 
 }

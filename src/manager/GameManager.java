@@ -1,6 +1,13 @@
 package manager;
 
+import fighting.Fighting;
 import gamescene.GameScene;
+import loader.ResourceLoader;
+import util.CharacterDiskInformation;
+
+/*
+TODO: Limit MCTS iterations.
+ */
 
 /**
  * 各ゲームシーンの初期化, 更新, 終了処理を管理するマネージャクラス．
@@ -20,11 +27,35 @@ public abstract class GameManager {
 	 */
 	protected boolean isExitFlag;
 
+
+	public String[] aiNames = { "KeyBoard", "KeyBoard" };
+	public String[] characterNames = { "ZEN", "ZEN" };
+	public InputManager inputManager;
+	public ResourceLoader resourceLoader;
+	public CharacterDiskInformation characterDiskInformation;
+
+
+	public Fighting fighting;
+
+	public int ROUND_FRAME_NUMBER = 3600;
+	public int NUM_OF_ROUNDS = 3;
+
+
+	public boolean randomInitialPositions = false;
+
 	/**
 	 * クラスコンストラクタ．<br>
 	 * 現在のゲームシーンをnull，ゲームの終了要求がない状態(false)としてインスタンスの初期化を行う．
 	 */
-	public GameManager() {
+	public GameManager(CharacterDiskInformation characterDiskInformation, String ai1, String ai2) {
+
+		this.aiNames[0] = ai1;
+		this.aiNames[1] = ai2;
+
+		this.resourceLoader = new ResourceLoader();
+		this.inputManager = new InputManager(this);
+		this.characterDiskInformation = characterDiskInformation;
+
 		this.currentGameScene = null;
 		this.isExitFlag = false;
 	}
@@ -48,7 +79,7 @@ public abstract class GameManager {
 	 * ゲーム終了判定が下された場合は，ゲームの終了要求があったかどうかのフラグをtrueにする．
 	 */
 	public void update() {
-		InputManager.getInstance().update();
+		this.inputManager.update();
 
 		if (!currentGameScene.isGameEnd()) {
 			if (currentGameScene.isTransition()) {
@@ -90,4 +121,15 @@ public abstract class GameManager {
 		return this.isExitFlag;
 	}
 
+
+	/**
+	 * Sets the names of the two AI fighter characters.
+	 * @param char1
+	 * @param char2
+	 */
+	public void setCharacterNames(String char1, String char2)
+	{
+		characterNames[0] = char1;
+		characterNames[1] = char2;
+	}
 }

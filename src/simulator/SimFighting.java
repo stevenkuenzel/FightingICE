@@ -43,11 +43,11 @@ public class SimFighting extends Fighting {
 	 */
 	public SimFighting() {
 		this.playerCharacters = new Character[2];
-		this.projectileDeque = new LinkedList<LoopEffect>();
+		this.projectileDeque = new LinkedList<>();
 		this.commandTable = new CommandTable();
 
-		this.inputKeys = new ArrayList<Deque<Key>>(2);
-		this.inputActions = new ArrayList<Deque<Action>>(2);
+		this.inputKeys = new ArrayList<>(2);
+		this.inputActions = new ArrayList<>(2);
 		this.commandCenter = new CommandCenter[2];
 	}
 
@@ -79,7 +79,7 @@ public class SimFighting extends Fighting {
 
 		Deque<AttackData> projectiles = frameData.getProjectiles();
 		for (AttackData temp : projectiles) {
-			this.projectileDeque.addLast(new LoopEffect(new Attack(temp), null));
+			this.projectileDeque.addLast(new LoopEffect(new Attack(temp)));
 		}
 	}
 
@@ -231,7 +231,7 @@ public class SimFighting extends Fighting {
 			if (this.playerCharacters[i].getAttack() != null) {
 				if (this.playerCharacters[i].getAttack().isProjectile()) {
 
-					this.projectileDeque.addLast(new LoopEffect(this.playerCharacters[i].getAttack(), null));
+					this.projectileDeque.addLast(new LoopEffect(this.playerCharacters[i].getAttack()));
 					this.playerCharacters[i].destroyAttackInstance();
 				}
 			}

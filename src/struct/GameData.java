@@ -4,10 +4,14 @@ import java.util.ArrayList;
 
 import fighting.Character;
 import fighting.Motion;
+import manager.GameManager;
 import setting.GameSetting;
 import setting.LaunchSetting;
 import simulator.Simulator;
 
+/*
+TODO:Remove maxHPs, maxEnergies.
+ */
 /**
  * The class dealing with invariable information in the game such as the screen
  * width of the stage and the chatacter's maximum HP.
@@ -64,12 +68,19 @@ public class GameData {
 	private Simulator simulator;
 
 	/**
+	 * The GameManager.
+	 */
+	public GameManager gameManager;
+
+	/**
 	 * The class constructor.
 	 */
-	public GameData() {
+	public GameData(GameManager gameManager) {
+		this.gameManager = gameManager;
+
 		this.maxHPs = new int[2];
 		this.maxEnergies = new int[2];
-		this.characterMotions = new ArrayList<ArrayList<MotionData>>(2);
+		this.characterMotions = new ArrayList<>(2);
 		this.characterNames = new String[2];
 		this.aiNames = new String[2];
 	}
@@ -83,11 +94,11 @@ public class GameData {
 	 *
 	 * @see Character
 	 */
-	public GameData(Character[] players) {
-		this();
+	public GameData(Character[] players, GameManager gameManager) {
+		this(gameManager);
 
 		for (int i = 0; i < 2; i++) {
-			ArrayList<MotionData> motionDataList = new ArrayList<MotionData>();
+			ArrayList<MotionData> motionDataList = new ArrayList<>();
 			ArrayList<Motion> temp = players[i].getMotionList();
 			for (Motion motion : temp) {
 				motionDataList.add(new MotionData(motion));
@@ -116,13 +127,9 @@ public class GameData {
 	 * @see MotionData
 	 */
 	public ArrayList<MotionData> getMotionData(boolean playerNumber) {
-		ArrayList<MotionData> temp = new ArrayList<MotionData>();
 		ArrayList<MotionData> copy = this.characterMotions.get(playerNumber ? 0 : 1);
 
-		for (MotionData motionData : copy) {
-			temp.add(motionData);
-		}
-		return temp;
+		return new ArrayList<>(copy);
 	}
 
 	/**
@@ -138,13 +145,14 @@ public class GameData {
 	 * @see Motion
 	 */
 	public ArrayList<Motion> getMotion(boolean playerNumber) {
-		ArrayList<Motion> temp = new ArrayList<Motion>();
+		ArrayList<Motion> temp = new ArrayList<>();
 		ArrayList<MotionData> copy = this.characterMotions.get(playerNumber ? 0 : 1);
 
 		for (MotionData motionData : copy) {
 			Motion motion = new Motion(motionData);
 			temp.add(motion);
 		}
+
 		return temp;
 	}
 
