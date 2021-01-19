@@ -1,8 +1,14 @@
+import aiinterface.AIInterface;
 import core.Game;
 import fighting.Character;
+import ftginterface.Fight;
 import gamescene.Play;
+import loader.ResourceLoader;
 import manager.InputManager;
 import util.CharacterDiskInformation;
+import util.CharacterRoundData;
+
+import java.util.List;
 
 /**
  * FightingICEのメインメソッドを持つクラス．
@@ -16,41 +22,15 @@ public class Main {
      * @param options 起動時に入力した全ての引数を格納した配列
      */
     public static void main(String[] options) {
-        Game game = new Game("MctsAi", "Thunder", new CharacterDiskInformation());
-        game.setCharacterNames("ZEN", "ZEN");
-        game.ROUND_FRAME_NUMBER = 600;
-        game.NUM_OF_ROUNDS = 3;
-        game.randomInitialPositions = true;
 
-        InputManager inputManager = game.inputManager;
+        Fight f = new Fight(3, 300, true);
+        f.setPlayer(0, "MctsAi", "ZEN");
+        f.setPlayer(1, "Thunder", "ZEN");
 
-        game.initialize();
+        f.initialize();
+        f.run();
 
-        Play play = null;
-        Character[] characters = null;
-
-        int i = 0;
-
-        while (!game.isExit())
-        {
-            game.update();
-            i++;
-
-            System.out.println(""+i);
-
-
-            if (play == null && game.currentGameScene instanceof Play)
-            {
-                play = (Play)game.currentGameScene;
-                characters = play.fighting.getCharacters();
-            }
-
-            if (play != null && play.isGameEnd())
-            {
-                break;
-            }
-        }
-
+        List<List<CharacterRoundData>> l = f.getRoundData();
         int x = 0;
     }
 }

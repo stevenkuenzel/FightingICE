@@ -6,7 +6,7 @@ import setting.GameSetting;
 import struct.CharacterData;
 import struct.HitArea;
 import struct.Key;
-import util.BehaviorData;
+import util.CharacterRoundData;
 import util.CharacterDiskInformation;
 
 import java.util.ArrayList;
@@ -168,15 +168,13 @@ public class Character {
 
     public int NEXT_ATTACK_ID = 0; // why static?
 
-    public Action lastTriggeredAction = null;
     public Attack projectileAttack;
     public List<Attack> allAttacks = new ArrayList<>();
 
-    public int totalComboCount = 0;
 
-    public BehaviorData behaviorData = new BehaviorData();
+    public CharacterRoundData currentCharacterRoundData = new CharacterRoundData();
 
-    public List<BehaviorData> roundBehaviourData = new ArrayList<>();
+    public List<CharacterRoundData> allCharacterRoundData = new ArrayList<>();
 
     public int maxEP = 300;
 
@@ -348,23 +346,39 @@ public class Character {
     }
 
     /**
-     * TODO: See content.
+     * Finishes the round. Saves the round date to the list of all rounds.
      */
-    public void roundEnd() {
-        roundBehaviourData.add(behaviorData);
-        behaviorData = new BehaviorData();
+    public void roundEnd(int finishedRound) {
+        // Set the round.
+        currentCharacterRoundData.round = finishedRound;
+
+        // Set the final HP.
+        currentCharacterRoundData.remainingHP = hp;
+
+        // Add the data.
+        allCharacterRoundData.add(currentCharacterRoundData);
+
+        // Create a new instance for the next round.
+        currentCharacterRoundData = new CharacterRoundData();
     }
 
-
-    /*
-    TODO: activelyTriggered, ownSpeedX..Y
-     */
     public void runAction(Action executeAction, boolean resetFlag) {
         Motion exeMotion = this.motionList.get(executeAction.ordinal());
 
         if (this.action != executeAction) {
             if (resetFlag) {
                 destroyAttackInstance();
+            }
+
+            if (exeMotion.getAttackSpeedX() + exeMotion.getAttackSpeedY() != 0)
+            {
+                // The attack is a projectile.
+                currentCharacterRoundData.offensiveProjectilesStarted++;
+            }
+            else
+            {
+                // .. a close attack.
+                currentCharacterRoundData.offensiveAttacksStarted++;
             }
 
             this.remainingFrame = exeMotion.getFrameNumber();
@@ -376,9 +390,17 @@ public class Character {
         this.state = exeMotion.getState();
 
         if (exeMotion.getSpeedX() != 0) {
-            this.speedX = this.front ? exeMotion.getSpeedX() : -exeMotion.getSpeedX();
+            int plusXspeed = exeMotion.getSpeedX();
+            this.speedX = this.front ? plusXspeed : -plusXspeed;
+
+            currentCharacterRoundData.totalAccelerationX += Math.abs(plusXspeed);
         }
-        this.speedY += exeMotion.getSpeedY();
+
+        int plusYspeed = exeMotion.getSpeedY();
+        this.speedY += plusYspeed;
+
+        currentCharacterRoundData.totalAccelerationY += Math.abs(plusYspeed);
+
         this.control = exeMotion.isControl();
     }
 
@@ -396,9 +418,10 @@ public class Character {
         frictionEffect();
         gravityEffect();
 
-        if (this.energy > maxEP) {
-            this.energy = maxEP;
-        }
+        // SK: Moved to set energy.
+//        if (this.energy > maxEP) {
+//            this.energy = maxEP;
+//        }
 
 
         if (getHitAreaBottom() >= GameSetting.STAGE_HEIGHT) {
@@ -1020,10 +1043,25 @@ public class Character {
     /**
      * Sets the character's energy.
      *
-     * @param energy the amount of energy
+     * @param newEnergy the amount of energy
      */
-    public void setEnergy(int energy) {
-        this.energy = energy;
+    public void setEnergy(int newEnergy) {
+        if (newEnergy > maxEP) newEnergy = maxEP;
+
+        int difference = newEnergy - this.energy;
+
+        if (difference < 0)
+        {
+            // Energy was consumed.
+            currentCharacterRoundData.consumedEP -= difference;
+        }
+        else if (difference > 0)
+        {
+            // Energy was received (successful attack or block, suffered attack).
+            currentCharacterRoundData.totalEP += difference;
+        }
+
+        this.energy = newEnergy;
     }
 
     /**

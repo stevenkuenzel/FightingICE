@@ -28,7 +28,8 @@ public class Play extends GameScene {
     /**
      * 現在のフレーム．
      */
-    private int nowFrame;
+    public int nowFrame;
+//    private int nowFrame;
 
     /**
      * 各ラウンド前に行う初期化処理内における経過フレーム数．
@@ -198,7 +199,7 @@ public class Play extends GameScene {
      */
     private void processingRoundEnd() {
         this.endFrame = 0;
-        this.fighting.processingRoundEnd();
+        this.fighting.processingRoundEnd(currentRound);
         RoundResult roundResult = new RoundResult(this.frameData);
         this.roundResults.add(roundResult);
 

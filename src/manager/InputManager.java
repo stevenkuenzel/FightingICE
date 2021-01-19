@@ -45,6 +45,11 @@ public class InputManager {
 
     public GameManager gameManager;
 
+    public AIInterface getAI(String name)
+    {
+        return predifinedAIs.get(name);
+    }
+
 
     public InputManager(GameManager gameManager) {
         this.gameManager = gameManager;

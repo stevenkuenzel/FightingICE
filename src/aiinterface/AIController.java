@@ -17,7 +17,8 @@ public class AIController {
     /**
      * AIに実装すべきメソッドを定義するインタフェース．
      */
-    private AIInterface ai;
+    public AIInterface ai;
+//    private AIInterface ai;
 
     /**
      * The character's side flag.<br>

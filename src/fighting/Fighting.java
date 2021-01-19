@@ -62,11 +62,12 @@ public class Fighting {
 
     }
 
-    public void processingRoundEnd() {
+    public void processingRoundEnd(int currentRound) {
         this.inputCommands.clear();
 
+
         for (Character character : this.playerCharacters) {
-            character.roundEnd();
+            character.roundEnd(currentRound);
             character.setProcessedCommand(new LinkedList<>());
             character.setInputCommand(new LinkedList<>());
         }
@@ -171,12 +172,15 @@ public class Fighting {
                 if (blocked) attack.setBlocked();
 
                 // Update the character behavior data.
-                attacker.behaviorData.offensiveProjectilesHit++;
+                attacker.currentCharacterRoundData.offensiveProjectilesHit++;
 
                 if (blocked) {
-                    defender.behaviorData.defensiveProjectilesBlocked++;
+                    // The projectile was blocked by the defender. Although it hit the defender, it caused reduced damage.
+                    attacker.currentCharacterRoundData.offensiveProjectilesBlocked++;
+
+                    defender.currentCharacterRoundData.defensiveProjectilesBlocked++;
                 } else {
-                    defender.behaviorData.defensiveProjectilesHit++;
+                    defender.currentCharacterRoundData.defensiveProjectilesHit++;
                 }
 
             } else {
@@ -204,12 +208,15 @@ public class Fighting {
                 if (blocked) attack.setBlocked();
 
                 // Update the character behavior data.
-                attacker.behaviorData.offensiveAttacksHit++;
+                attacker.currentCharacterRoundData.offensiveAttacksHit++;
 
                 if (blocked) {
-                    defender.behaviorData.defensiveAttacksBlocked++;
+                    // The attack was blocked by the defender. Although it hit the defender, it caused reduced damage.
+                    attacker.currentCharacterRoundData.offensiveAttacksBlocked++;
+
+                    defender.currentCharacterRoundData.defensiveAttacksBlocked++;
                 } else {
-                    defender.behaviorData.defensiveAttacksHit++;
+                    defender.currentCharacterRoundData.defensiveAttacksHit++;
                 }
 
                 // FightingICE specific.
