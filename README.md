@@ -6,7 +6,7 @@ Fork of the official FightingICE repository.
 Provide a lightweight variant of the outstanding AI research platform 'FightingICE' that suits the requirements of neuroevolution.
 
 ```bash
-Currently the project contains errors -- it is not runnable yet. Those will be fixed soon.
+The project is runnable now. However, it has not been tested exhaustively yet. See Main.java for how to start a fight. A tutorial will follow up.
 ```
 
 ### Scientific Papers Concerning Neuroevolution in FightingICE ###
