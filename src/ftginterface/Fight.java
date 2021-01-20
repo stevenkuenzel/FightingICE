@@ -80,7 +80,7 @@ public class Fight {
 
             if (characters != null)
             {
-                System.out.println(characters[0].getHp() + "  --  " + characters[1].getHp());
+                if (play.nowFrame % 600 == 0)                System.out.println(characters[0].getHp() + "  --  " + characters[1].getHp());
             }
 
             if (play != null && play.isGameEnd()) break;
