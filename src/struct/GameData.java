@@ -118,27 +118,6 @@ public class GameData {
 	}
 
 	/**
-	 * THIS IS A CHEAT. ONLY FOR BA FRANCKE.
-	 * @param action
-	 * @return
-	 */
-	public int getDamageOf(Action action)
-	{
-		return this.characterMotions.get(0).stream().filter(x -> x.actionName.equals(action.name())).collect(Collectors.toList()).get(0).attackHitDamage;
-	}
-	/**
-	 * THIS IS A CHEAT. ONLY FOR BA FRANCKE.
-	 * @param action
-	 * @return
-	 */
-	public int getEPOf(Action action)
-	{
-		int ep = -this.characterMotions.get(0).stream().filter(x -> x.actionName.equals(action.name())).collect(Collectors.toList()).get(0).attackStartAddEnergy;
-
-		return ep;
-	}
-
-	/**
 	 * Returns the motion of the player specified by the argument.<br>
 	 *
 	 * @deprecated This method is called in the simulator.<br>

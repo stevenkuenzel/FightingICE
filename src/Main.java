@@ -19,8 +19,8 @@ public class Main {
 
         Fight f = new Fight(3, 3600, true);
         f.setPlayer(0, new Xai(), "ZEN");
-        f.setPlayer(1, "MctsAi", "ZEN");
-//        f.setPlayer(1, "Thunder", "ZEN");
+//        f.setPlayer(1, new Xai(), "ZEN");
+        f.setPlayer(1, "Thunder", "ZEN");
 
         f.initialize();
         f.run();

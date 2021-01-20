@@ -65,8 +65,12 @@ public class Xai implements AIInterface {
 
                 FrameData simulatorAheadFrameData = simulator.simulate(frameData, playerNumber, null, null, 14);
 
+                Skill bestSkillOpponent = test(simulatorAheadFrameData, !playerNumber, null);
+                Skill bestSkill = test(simulatorAheadFrameData, playerNumber, bestSkillOpponent);
+                /*
                 Skill bestSkillOpponent = evolution(simulatorAheadFrameData, !playerNumber, null);
                 Skill bestSkill = evolution(simulatorAheadFrameData, playerNumber, bestSkillOpponent);
+                 */
 
                 commandCenter.commandCall(bestSkill.action.name());
             }
@@ -87,8 +91,7 @@ public class Xai implements AIInterface {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Result)
-            {
+            if (obj instanceof Result) {
                 Result other = (Result) obj;
 
                 return skill.action == other.skill.action;
@@ -105,10 +108,10 @@ public class Xai implements AIInterface {
             Result r = new Result(-9999, selected);
             genome.skill = selected;
 
-            if (known.contains(r))
-            {
+            if (known.contains(r)) {
                 genome.fitness = known.stream().filter(x -> x.equals(r)).findFirst().get().score;
                 genome.evaluated = true;
+                return;
             }
 
             Deque<Action> my = new LinkedList<>();
@@ -135,6 +138,56 @@ public class Xai implements AIInterface {
         }
     }
 
+    private Skill test(FrameData simulatorAheadFrameData, boolean playerNumber, Skill opponentSkill) {
+        CharacterData myCharacter = simulatorAheadFrameData.getCharacter(playerNumber);
+        CharacterData oppCharacter = simulatorAheadFrameData.getCharacter(!playerNumber);
+
+        int myHP = myCharacter.getHp();
+        int oppHP = oppCharacter.getHp();
+
+        SkillLocation location = myCharacter.getState() == State.AIR ? SkillLocation.InAir : SkillLocation.OnGround;
+        int ep = myCharacter.getEnergy();
+
+        List<Skill> subset = skillLoader.getSkills(location, ep);
+
+        int scoreBest = -9999;
+        Skill best = null;
+
+        for (Skill skill : subset) {
+            Deque<Action> my = new LinkedList<>();
+            my.add(skill.action);
+
+            Deque<Action> opp = new LinkedList<>();
+            if (opponentSkill != null) opp.add(opponentSkill.action);
+
+            int numOfFrames = skill.totalFramesFromStartToFinish;
+            if (opponentSkill != null && opponentSkill.totalFramesFromStartToFinish > numOfFrames)
+                numOfFrames = opponentSkill.totalFramesFromStartToFinish;
+
+            FrameData result = simulator.simulate(frameData, playerNumber, my, opp, numOfFrames);
+            int fitness = getScore(result, playerNumber, myHP, oppHP);
+
+            // Do random perturbation?
+//            fitness += (random.nextInt(21) - 10);
+
+            if (fitness > scoreBest) {
+                scoreBest = fitness;
+                best = skill;
+            }
+//            else if (fitness == scoreBest && skill.isMovement)
+//            {
+//                best = skill;
+//            }
+        }
+
+        if (scoreBest == 0) {
+            subset.sort(Comparator.comparingInt(o -> -o.speedX));
+
+            return subset.get(0);
+        }
+
+        return best;
+    }
 
     private Skill evolution(FrameData simulatorAheadFrameData, boolean playerNumber, Skill opponentSkill) {
         known.clear();
@@ -146,11 +199,11 @@ public class Xai implements AIInterface {
 
         List<Genome> pop = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             pop.add(new Genome(random.nextDouble(), random.nextDouble(), random.nextDouble(), random));
         }
 
-        for (int g = 0; g < 50; g++) {
+        for (int g = 0; g < 150; g++) {
 
             if (g > 0) {
                 int[] dist = createDistr(pop);
