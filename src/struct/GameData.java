@@ -1,5 +1,6 @@
 package struct;
 
+import enumerate.Action;
 import fighting.Character;
 import fighting.Motion;
 import manager.GameManager;
@@ -7,6 +8,7 @@ import setting.GameSetting;
 import simulator.Simulator;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /*
 TODO:Remove maxHPs, maxEnergies.
@@ -113,6 +115,27 @@ public class GameData {
 		ArrayList<MotionData> copy = this.characterMotions.get(playerNumber ? 0 : 1);
 
 		return new ArrayList<>(copy);
+	}
+
+	/**
+	 * THIS IS A CHEAT. ONLY FOR BA FRANCKE.
+	 * @param action
+	 * @return
+	 */
+	public int getDamageOf(Action action)
+	{
+		return this.characterMotions.get(0).stream().filter(x -> x.actionName.equals(action.name())).collect(Collectors.toList()).get(0).attackHitDamage;
+	}
+	/**
+	 * THIS IS A CHEAT. ONLY FOR BA FRANCKE.
+	 * @param action
+	 * @return
+	 */
+	public int getEPOf(Action action)
+	{
+		int ep = -this.characterMotions.get(0).stream().filter(x -> x.actionName.equals(action.name())).collect(Collectors.toList()).get(0).attackStartAddEnergy;
+
+		return ep;
 	}
 
 	/**

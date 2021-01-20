@@ -78,6 +78,11 @@ public class Fight {
                 characters = play.fighting.getCharacters();
             }
 
+            if (characters != null)
+            {
+                System.out.println(characters[0].getHp() + "  --  " + characters[1].getHp());
+            }
+
             if (play != null && play.isGameEnd()) break;
         }
 

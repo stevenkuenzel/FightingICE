@@ -1,11 +1,5 @@
-import aiinterface.AIInterface;
-import core.Game;
-import fighting.Character;
+import aitest.Xai;
 import ftginterface.Fight;
-import gamescene.Play;
-import loader.ResourceLoader;
-import manager.InputManager;
-import util.CharacterDiskInformation;
 import util.CharacterRoundData;
 
 import java.util.List;
@@ -23,9 +17,9 @@ public class Main {
      */
     public static void main(String[] options) {
 
-        Fight f = new Fight(3, 300, true);
-        f.setPlayer(0, "MctsAi", "ZEN");
-        f.setPlayer(1, "Thunder", "ZEN");
+        Fight f = new Fight(3, 3600, true);
+        f.setPlayer(0, new Xai(), "ZEN");
+        f.setPlayer(1, "MctsAi", "ZEN");
 
         f.initialize();
         f.run();
