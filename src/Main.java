@@ -1,5 +1,6 @@
 import aitest.Xai;
 import ftginterface.Fight;
+import ftginterface.FightObservation;
 import util.CharacterRoundData;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class Main {
      */
     public static void main(String[] options) {
 
-        Fight f = new Fight(3, 3600, true);
+        Fight f = new Fight(3, 3600, true, true);
         f.setPlayer(0, new Xai(), "ZEN");
 //        f.setPlayer(1, new Xai(), "ZEN");
         f.setPlayer(1, "Thunder", "ZEN");
@@ -25,5 +26,7 @@ public class Main {
         f.initialize();
         f.run();
 
+        FightObservation x = f.getObservation();
+        int  y = 0;
     }
 }
