@@ -45,3 +45,6 @@ debugData
 #intellJ
 /.idea/*
 *.iml
+
+output
+input

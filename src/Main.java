@@ -1,4 +1,5 @@
 import aitest.Xai;
+import de.sk.xml.XElement;
 import ftginterface.Fight;
 import ftginterface.FightObservation;
 import util.CharacterRoundData;
@@ -26,7 +27,10 @@ public class Main {
         f.initialize();
         f.run();
 
+
         FightObservation x = f.getObservation();
+
+        x.export();
         int  y = 0;
     }
 }
