@@ -13,6 +13,11 @@ import java.net.URLClassLoader;
  */
 public class ResourceLoader {
 
+    public String fightingICEroot;
+
+    public ResourceLoader(String fightingICEroot) {
+        this.fightingICEroot = fightingICEroot;
+    }
 
     /**
      * 指定されたAI名のjarファイルを読み込み、AI情報を格納したコントローラを返す．
@@ -22,7 +27,8 @@ public class ResourceLoader {
      * 読み込んだAIが無ければnullを返す．
      */
     public AIController loadAI(String aiName) {
-        File file = new File("./data/ai/" + aiName + ".jar");
+        File file = new File(fightingICEroot + "/data/ai/" + aiName + ".jar");
+//        File file = new File("./data/ai/" + aiName + ".jar");
 
         try {
             ClassLoader cl = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});

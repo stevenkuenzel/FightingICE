@@ -16,8 +16,8 @@ public class Game extends GameManager {
      * @param ai2 Name of the second AI fighter.
      * @param characterDiskInformation Motion and size information from the drive.
      */
-    public Game(String ai1, String ai2, CharacterDiskInformation characterDiskInformation) {
-        super(characterDiskInformation, ai1, ai2);
+    public Game(String fightingICEroot, String ai1, String ai2, CharacterDiskInformation characterDiskInformation) {
+        super(fightingICEroot, characterDiskInformation, ai1, ai2);
     }
 
     @Override

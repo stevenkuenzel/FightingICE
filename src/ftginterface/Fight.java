@@ -24,7 +24,7 @@ public class Fight {
         return false;
     }
 
-    private static Action[] ATTACK_ACTIONS = new Action[]
+    private static final Action[] ATTACK_ACTIONS = new Action[]
             {
                     Action.AIR_A,
                     Action.AIR_B,
@@ -59,22 +59,35 @@ public class Fight {
                     Action.THROW_B
             };
 
-    int rounds, framesPerRound;
+    // Basic settings.
+    int rounds;
+    int framesPerRound;
     boolean randomInitialPositions;
-
-    Player[] players = new Player[2];
-
-    HashMap<String, AIInterface> toRegister = new HashMap<>();
-
-    Game game;
-
     boolean isObserved;
 
-    public Fight(int rounds, int framesPerRound, boolean randomInitialPositions, boolean isObserved) {
+    String fightingICEroot;
+
+    // Players and registration.
+    Player[] players = new Player[2];
+    HashMap<String, AIInterface> toRegister = new HashMap<>();
+
+    // Game related.
+    Game game;
+    Play play;
+    fighting.Character[] characters;
+
+    // Observation related.
+    Action[] lastAction = new Action[]{null, null};
+    StateAction[] stateActions = new StateAction[]{null, null};
+    ArrayList<StateAction>[] pending = new ArrayList[]{new ArrayList<StateAction>(), new ArrayList<StateAction>()};
+    HashMap<Action, ArrayList<StateAction>>[] successData = new HashMap[]{new HashMap<Action, ArrayList<StateAction>>(), new HashMap<Action, ArrayList<StateAction>>()};
+
+    public Fight(int rounds, int framesPerRound, boolean randomInitialPositions, boolean isObserved, String fightingICEroot) {
         this.rounds = rounds;
         this.framesPerRound = framesPerRound;
         this.randomInitialPositions = randomInitialPositions;
         this.isObserved = isObserved;
+        this.fightingICEroot = fightingICEroot;
     }
 
     public void setPlayer(int index, String name, String character) {
@@ -94,12 +107,12 @@ public class Fight {
         toRegister.put(name, ai);
     }
 
-    public void initialize()  {
+    private void initialize() {
         if (players[0] == null || players[1] == null) {
 //            throw new Exception("Players are not initialized. Use setPlayer(..) twice before initialize().");
         }
 
-        game = new Game(players[0].name, players[1].name, new CharacterDiskInformation());
+        game = new Game(fightingICEroot, players[0].name, players[1].name, new CharacterDiskInformation(fightingICEroot));
         game.setCharacterNames(players[0].character, players[1].character);
         game.randomInitialPositions = randomInitialPositions;
         game.NUM_OF_ROUNDS = rounds;
@@ -117,10 +130,9 @@ public class Fight {
         game.initialize();
     }
 
-    Play play;
-    fighting.Character[] characters;
 
-    public void run() {
+    public FightResult run() {
+        initialize();
 
         while (!game.isExit()) {
             game.update();
@@ -141,18 +153,12 @@ public class Fight {
 
         game.close();
 
-
+        return new FightResult(getRoundData(), isObserved ? getObservation() : null);
     }
 
-    public FightObservation getObservation()
-    {
-        return new FightObservation(players[0].name , players[1].name, successData);
+    private FightObservation getObservation() {
+        return new FightObservation(players[0].name, players[1].name, successData);
     }
-
-    Action[] lastAction = new Action[]{null, null};
-    StateAction[] stateActions = new StateAction[]{null, null};
-    ArrayList<StateAction>[] pending = new ArrayList[]{new ArrayList<StateAction>(), new ArrayList<StateAction>()};
-    HashMap<Action, ArrayList<StateAction>>[] successData = new HashMap[]{new HashMap<Action, ArrayList<StateAction>>(), new HashMap<Action, ArrayList<StateAction>>()};
 
     private void observe(boolean roundEnd) {
         observe(0, roundEnd);
@@ -233,13 +239,10 @@ public class Fight {
                     // Save the sample to the list of all successful samples for the action at hand.
                     ArrayList<StateAction> listOfSuccessfulSamples;
 
-                    if (!successData[id].containsKey(stateAction.action))
-                    {
+                    if (!successData[id].containsKey(stateAction.action)) {
                         listOfSuccessfulSamples = new ArrayList<>();
                         successData[id].put(stateAction.action, listOfSuccessfulSamples);
-                    }
-                    else
-                    {
+                    } else {
                         listOfSuccessfulSamples = successData[id].get(stateAction.action);
                     }
 
@@ -268,11 +271,13 @@ public class Fight {
      *
      * @return List of round data.
      */
-    public List<List<CharacterRoundData>> getRoundData() {
-        List<List<CharacterRoundData>> data = new ArrayList<>();
+    private CharacterRoundData[][] getRoundData() {
+        CharacterRoundData[][] data = new CharacterRoundData[2][];
 
         for (int i = 0; i < 2; i++) {
-            data.add(new ArrayList<>(characters[i].allCharacterRoundData));
+            for (int j = 0; j < characters[i].allCharacterRoundData.size(); j++) {
+                data[i][j] = characters[i].allCharacterRoundData.get(j);
+            }
         }
 
         return data;

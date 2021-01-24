@@ -50,15 +50,20 @@ public abstract class GameManager {
 	public boolean randomInitialPositions = false;
 
 	/**
+	 * Directory of the FightingICE files.
+	 */
+	public String fightingICEroot;
+
+	/**
 	 * クラスコンストラクタ．<br>
 	 * 現在のゲームシーンをnull，ゲームの終了要求がない状態(false)としてインスタンスの初期化を行う．
 	 */
-	public GameManager(CharacterDiskInformation characterDiskInformation, String ai1, String ai2) {
+	public GameManager(String fightingICEroot, CharacterDiskInformation characterDiskInformation, String ai1, String ai2) {
 
 		this.aiNames[0] = ai1;
 		this.aiNames[1] = ai2;
 
-		this.resourceLoader = new ResourceLoader();
+		this.resourceLoader = new ResourceLoader(fightingICEroot);
 		this.inputManager = new InputManager(this);
 		this.characterDiskInformation = characterDiskInformation;
 

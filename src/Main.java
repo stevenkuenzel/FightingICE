@@ -1,10 +1,6 @@
 import aitest.Xai;
-import de.sk.xml.XElement;
 import ftginterface.Fight;
-import ftginterface.FightObservation;
-import util.CharacterRoundData;
-
-import java.util.List;
+import ftginterface.FightResult;
 
 /**
  * FightingICEのメインメソッドを持つクラス．
@@ -19,18 +15,10 @@ public class Main {
      */
     public static void main(String[] options) {
 
-        Fight f = new Fight(3, 3600, true, true);
+        Fight f = new Fight(3, 3600, true, true, ".");
         f.setPlayer(0, new Xai(), "ZEN");
-//        f.setPlayer(1, new Xai(), "ZEN");
         f.setPlayer(1, "Thunder", "ZEN");
 
-        f.initialize();
-        f.run();
-
-
-        FightObservation x = f.getObservation();
-
-        x.export();
-        int  y = 0;
+        FightResult fr = f.run();
     }
 }

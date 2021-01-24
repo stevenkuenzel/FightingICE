@@ -14,11 +14,11 @@ public class CharacterDiskInformation
 	public String[] names = { "ZEN", "LUD", "GARNET" };
 	private final HashMap<String, InformationContainer> map = new HashMap<>();
 
-	public CharacterDiskInformation()
+	public CharacterDiskInformation(String fightingICEroot)
 	{
 
 		for (String name : names) {
-			map.put(name, new InformationContainer(name));
+			map.put(name, new InformationContainer(name, fightingICEroot));
 		}
 	}
 
@@ -39,9 +39,9 @@ public class CharacterDiskInformation
 		public int[] graphicAdjustInitialX = new int[2];
 		public List<Motion> motionList;
 
-		public InformationContainer(String characterName) {
+		public InformationContainer(String characterName, String fightingICEroot) {
 			this.characterName = characterName;
-			loadDataFromDisk();
+			loadDataFromDisk(fightingICEroot);
 		}
 
 		public InformationContainer(InformationContainer parent) {
@@ -53,12 +53,13 @@ public class CharacterDiskInformation
 			this.motionList = parent.motionList;
 		}
 
-		private void loadDataFromDisk() {
+		private void loadDataFromDisk(String fightingICEroot) {
 			try {
-				String wd = Paths.get("").toAbsolutePath().toString() + "/";
+//				String wd = Paths.get("").toAbsolutePath().toString() + "/";
 
 				// Size ...
-				List<String> lines = Files.readAllLines(Paths.get(wd + "./data/characters/" + characterName + "/gSetting.txt"));
+				List<String> lines = Files.readAllLines(Paths.get(fightingICEroot + "/data/characters/" + characterName + "/gSetting.txt"));
+//				List<String> lines = Files.readAllLines(Paths.get(wd + "./data/characters/" + characterName + "/gSetting.txt"));
 				String[] size = lines.get(0).split(",", 0);
 				String[] center = lines.get(1).split(",", 0);
 
@@ -69,7 +70,8 @@ public class CharacterDiskInformation
 				this.graphicAdjustInitialX[1] = Integer.parseInt(center[3]);
 
 				// Motions / Skills ...
-				lines = Files.readAllLines(Paths.get(wd + "./data/characters/" + characterName + "/Motion.csv"));
+				lines = Files.readAllLines(Paths.get(fightingICEroot + "/data/characters/" + characterName + "/Motion.csv"));
+//				lines = Files.readAllLines(Paths.get(wd + "./data/characters/" + characterName + "/Motion.csv"));
 				ArrayList<Motion> motionList = new ArrayList<>(lines.size());
 
 				for (int i = 1; i < lines.size(); i++) {
