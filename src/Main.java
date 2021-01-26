@@ -15,9 +15,11 @@ public class Main {
      */
     public static void main(String[] options) {
 
+
+
         Fight f = new Fight(3, 3600, true, true, ".");
-        f.setPlayer(0, new Xai(), "ZEN");
-        f.setPlayer(1, "Thunder", "ZEN");
+        f.setPlayer(0, "Toothless", "ZEN");
+        f.setPlayer(1, "Toothless", "ZEN");
 
         FightResult fr = f.run();
     }

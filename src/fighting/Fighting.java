@@ -52,6 +52,16 @@ public class Fighting {
     public GameManager gameManager;
 
     /**
+     * Returns the current Character-instance of the respective player. This is a cheat for DummyBot and CollectionBot -- do not use it in competition AI.
+     * @param playerNumber The player number.
+     * @return The Character instance.
+     */
+    public Character getCharacter(boolean playerNumber)
+    {
+        return playerCharacters[playerNumber ? 0 : 1];
+    }
+
+    /**
      * Class constructor．
      */
     public Fighting() {

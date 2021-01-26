@@ -4,15 +4,18 @@ import aiinterface.AIInterface;
 import aiinterface.CommandCenter;
 import enumerate.Action;
 import enumerate.State;
+import ftginterface.skills.Skill;
+import ftginterface.skills.SkillLoader;
+import ftginterface.skills.SkillLocation;
 import simulator.Simulator;
 import struct.CharacterData;
 import struct.FrameData;
 import struct.GameData;
 import struct.Key;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Xai implements AIInterface {
     GameData gameData;
@@ -35,7 +38,7 @@ public class Xai implements AIInterface {
         this.commandCenter = new CommandCenter();
         this.key = new Key();
 
-        skillLoader = new SkillLoader(gd.getCharacterName(playerNumber));
+        skillLoader = new SkillLoader(gd.getCharacterName(playerNumber), ".");
 
         return 0;
     }
@@ -102,7 +105,7 @@ public class Xai implements AIInterface {
     }
 
     private void evaluate(SkillLocation skillLocation, int ep, Genome genome, Skill opponentSkill, int myHP, int oppHP) {
-        Skill selected = skillLoader.find(skillLocation, ep, genome.dX, genome.dY, random.nextDouble() <= genome.pMove);
+        Skill selected = find(skillLocation, ep, genome.dX, genome.dY, random.nextDouble() <= genome.pMove);
 
         if (selected != null) {
             Result r = new Result(-9999, selected);
@@ -136,6 +139,60 @@ public class Xai implements AIInterface {
         } else {
             genome.fitness = -9999;
         }
+    }
+
+    public Skill find(SkillLocation location, int maxEP, double x, double y, boolean move) {
+        List<Skill> available = skillLoader.skills.stream().filter(z -> z.attackLocation == location && z.energyRequired <= maxEP && (z.isMovement == move)).collect(Collectors.toList());
+
+        double xMin = Double.MAX_VALUE;
+        double xMax = Double.NEGATIVE_INFINITY;
+        double yMin = Double.MAX_VALUE;
+        double yMax = Double.NEGATIVE_INFINITY;
+
+        for (Skill skill : available) {
+            if (move) {
+                if (skill.speedX < xMin) xMin = skill.speedX;
+                if (skill.speedX > xMax) xMax = skill.speedX;
+                if (skill.speedY < yMin) yMin = skill.speedY;
+                if (skill.speedY > yMax) yMax = skill.speedY;
+            } else {
+                if (skill.centerX < xMin) xMin = skill.centerX;
+                if (skill.centerX > xMax) xMax = skill.centerX;
+                if (skill.centerY < yMin) yMin = skill.centerY;
+                if (skill.centerY > yMax) yMax = skill.centerY;
+            }
+        }
+
+
+        double dMin = Double.MAX_VALUE;
+        Skill selected = null;
+
+        for (Skill skill : available) {
+            double dx, dy = 0d;
+
+            if (move) {
+                dx = skill.speedX;
+                dy = skill.speedY;
+            } else {
+                dx = skill.centerX;
+                dy = skill.centerY;
+            }
+
+            dx = (dx - xMin) / (xMax - xMin);
+            dy = (dy - yMin) / (yMax - yMin);
+
+            dx -= x;
+            dy -= y;
+
+            double d = dx * dx + dy * dy;
+
+            if (d < dMin) {
+                dMin = d;
+                selected = skill;
+            }
+        }
+
+        return selected;
     }
 
     private Skill test(FrameData simulatorAheadFrameData, boolean playerNumber, Skill opponentSkill) {

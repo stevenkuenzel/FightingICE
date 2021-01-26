@@ -5,6 +5,8 @@ import core.Game;
 import enumerate.Action;
 import fighting.Attack;
 import fighting.Character;
+import ftginterface.skills.Skill;
+import ftginterface.skills.SkillLoader;
 import gamescene.Play;
 import manager.InputManager;
 import util.CharacterDiskInformation;
@@ -88,6 +90,11 @@ public class Fight {
         this.randomInitialPositions = randomInitialPositions;
         this.isObserved = isObserved;
         this.fightingICEroot = fightingICEroot;
+
+        if (!SkillLoader.isInitialized)
+        {
+            SkillLoader.initialize(fightingICEroot);
+        }
     }
 
     public void setPlayer(int index, String name, String character) {
@@ -97,10 +104,23 @@ public class Fight {
     }
 
     public void setPlayer(int index, AIInterface ai, String character) {
-        String name = ai.getClass().getName() + (index + 1);
+        String aiName = ai.getClass().getName();//+ (index + 1);
 
-        setPlayer(index, name, character);
-        registerAIInterface(ai, name);
+        if (aiName.contains("."))
+        {
+            String[] split = aiName.split("\\.");
+            aiName = split[split.length - 1];
+        }
+
+        aiName += "" + (index + 1);
+
+        setPlayer(index, ai, aiName, character);
+    }
+
+
+    public void setPlayer(int index, AIInterface ai, String aiName, String character) {
+        setPlayer(index, aiName, character);
+        registerAIInterface(ai, aiName);
     }
 
     private void registerAIInterface(AIInterface ai, String name) {
@@ -272,7 +292,7 @@ public class Fight {
      * @return List of round data.
      */
     private CharacterRoundData[][] getRoundData() {
-        CharacterRoundData[][] data = new CharacterRoundData[2][];
+        CharacterRoundData[][] data = new CharacterRoundData[2][rounds];
 
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < characters[i].allCharacterRoundData.size(); j++) {

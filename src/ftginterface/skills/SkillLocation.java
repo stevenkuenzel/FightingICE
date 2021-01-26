@@ -1,4 +1,4 @@
-package aitest;
+package ftginterface.skills;
 
 public enum SkillLocation {
     OnGround,
