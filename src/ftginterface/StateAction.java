@@ -1,15 +1,15 @@
 package ftginterface;
 
 import de.sk.xml.XElement;
+import de.sk.xml.XLoadable;
 import de.sk.xml.XSavable;
 import enumerate.Action;
 import fighting.Attack;
 
-public class StateAction implements XSavable {
+public class StateAction implements XSavable, XLoadable<StateAction> {
     public Action action;
 
-    public StateAction(Action action)
-    {
+    public StateAction(Action action) {
         this.action = action;
     }
 
@@ -29,5 +29,24 @@ public class StateAction implements XSavable {
         xElement.addAttribute("dY", distanceY);
 
         return xElement;
+    }
+
+
+    private static final StateAction defaultAction = new StateAction(Action.NEUTRAL);
+
+    public static StateAction loadFromXML(XElement xElement) {
+        return defaultAction.fromXElement(xElement);
+    }
+
+    @Override
+    public StateAction fromXElement(XElement xElement) {
+
+        StateAction result = new StateAction(Action.valueOf(xElement.getAttributeValue("Action")));
+
+        result.success = xElement.getAttributeValueAsBool("Success");
+        result.distanceX = xElement.getAttributeValueAsInt("dX");
+        result.distanceY = xElement.getAttributeValueAsInt("dY");
+
+        return result;
     }
 }

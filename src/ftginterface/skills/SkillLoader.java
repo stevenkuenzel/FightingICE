@@ -39,7 +39,7 @@ public class SkillLoader {
     public String characterName;
     public List<Skill> skills = new ArrayList<>();
 
-    public List<Skill> combatAir, combatGround;
+    public List<Skill> combatAir, combatGround, movementSkills;
 
     public SkillLoader(String characterName, String fightingICEroot) {
         this.characterName = characterName;
@@ -67,6 +67,7 @@ public class SkillLoader {
     {
         combatAir = skills.stream().filter(x -> x.isAttack && x.attackLocation == SkillLocation.InAir).collect(Collectors.toList());
         combatGround = skills.stream().filter(x -> x.isAttack && x.attackLocation == SkillLocation.OnGround).collect(Collectors.toList());
+        movementSkills = skills.stream().filter(x -> x.isMovement).collect(Collectors.toList());
     }
 
     public SkillLoader(String characterName, List<Skill> skills) {
