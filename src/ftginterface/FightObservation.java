@@ -57,35 +57,37 @@ public class FightObservation {
         }
     }
 
-    public void export() {
-        // TODO.
-        if (p1Success != null) export(name1, name2, p1Success);
-        if (p2Success != null) export(name2, name1, p2Success);
+    public XElement export(int id) {
+
+        if (p1Success != null && id == 0) return export(name1, name2, p1Success);
+        if (p2Success != null && id == 1) return export(name2, name1, p2Success);
+
+        return null;
     }
 
-    private void export(String controllerName, String opponentName, HashMap<Action, ArrayList<StateAction>> samples) {
+    private XElement export(String controllerName, String opponentName, HashMap<Action, ArrayList<StateAction>> samples) {
         ArrayList<Action> sortedKeys = new ArrayList<>(samples.keySet());
         sortedKeys.sort(Comparator.comparingInt(Enum::ordinal));
 
 
-        // 1. Export the data ??
-        XElement xController = new XElement("Controller", new XAttribute("Name", controllerName), new XAttribute("Opponent", opponentName));
-
-        XElement xActions = xController.addChild("Actions");
-
-        for (Action action : sortedKeys) {
-            List<StateAction> success = samples.get(action).stream().filter(x -> x.success).collect(Collectors.toList());
-
-
-            if (!success.isEmpty()) {
-                int n = samples.get(action).size();
-                int sr = (int) (100d * (double) success.size() / (double) n);
-
-                xActions.addChild("Action", new XAttribute("Name", action.name()), new XAttribute("Success", sr), new XAttribute("N", n));
-            }
-        }
-
-        xController.save(PathUtil.Companion.getOutputDir() + "Info_" + controllerName + "_" + opponentName + ".xml");
+//        // 1. Export the data ??
+//        XElement xController = new XElement("Controller", new XAttribute("Name", controllerName), new XAttribute("Opponent", opponentName));
+//
+//        XElement xActions = xController.addChild("Actions");
+//
+//        for (Action action : sortedKeys) {
+//            List<StateAction> success = samples.get(action).stream().filter(x -> x.success).collect(Collectors.toList());
+//
+//
+//            if (!success.isEmpty()) {
+//                int n = samples.get(action).size();
+//                int sr = (int) (100d * (double) success.size() / (double) n);
+//
+//                xActions.addChild("Action", new XAttribute("Name", action.name()), new XAttribute("Success", sr), new XAttribute("N", n));
+//            }
+//        }
+//
+//        xController.save(PathUtil.Companion.getOutputDir() + "Info_" + controllerName + "_" + opponentName + ".xml");
 
 
         // 2. Export the raw information for postprocessing and reuse.
@@ -102,6 +104,8 @@ public class FightObservation {
             }
         }
 
-        xRaw.save(PathUtil.Companion.getOutputDir() + "Raw_" + controllerName + "_" + opponentName + ".xml");
+        return xRaw;
+
+//        xRaw.save(PathUtil.Companion.getOutputDir() + "Raw_" + controllerName + "_" + opponentName + ".xml");
     }
 }
