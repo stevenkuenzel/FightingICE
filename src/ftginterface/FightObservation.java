@@ -1,8 +1,7 @@
 package ftginterface;
 
-import de.sk.util.PathUtil;
-import de.sk.xml.XAttribute;
-import de.sk.xml.XElement;
+import de.stevenkuenzel.xml.XAttribute;
+import de.stevenkuenzel.xml.XElement;
 import enumerate.Action;
 
 import java.util.ArrayList;

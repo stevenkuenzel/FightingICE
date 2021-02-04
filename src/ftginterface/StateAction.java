@@ -1,8 +1,8 @@
 package ftginterface;
 
-import de.sk.xml.XElement;
-import de.sk.xml.XLoadable;
-import de.sk.xml.XSavable;
+import de.stevenkuenzel.xml.XElement;
+import de.stevenkuenzel.xml.XLoadable;
+import de.stevenkuenzel.xml.XSavable;
 import enumerate.Action;
 import fighting.Attack;
 
