@@ -5,7 +5,6 @@ import core.Game;
 import enumerate.Action;
 import fighting.Attack;
 import fighting.Character;
-import ftginterface.skills.Skill;
 import ftginterface.skills.SkillLoader;
 import gamescene.Play;
 import manager.InputManager;
@@ -14,7 +13,6 @@ import util.CharacterRoundData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Fight {
 
@@ -84,6 +82,15 @@ public class Fight {
     ArrayList<StateAction>[] pending = new ArrayList[]{new ArrayList<StateAction>(), new ArrayList<StateAction>()};
     HashMap<Action, ArrayList<StateAction>>[] successData = new HashMap[]{new HashMap<Action, ArrayList<StateAction>>(), new HashMap<Action, ArrayList<StateAction>>()};
 
+    /**
+     * Creates an instance of Fight.
+     *
+     * @param rounds                 The number of rounds. Default = 3.
+     * @param framesPerRound         The number of frames per round. Default = 3,600.
+     * @param randomInitialPositions If true, the characters start at random positions to add uncertainty to the fight.
+     * @param isObserved             If true, information about all attack skills (starting location, success) is captured and provided after the fight.
+     * @param fightingICEroot        The directory where the 'data' folder of FightingICE is located. Default = ".", if data is located in the working directory of the application.
+     */
     public Fight(int rounds, int framesPerRound, boolean randomInitialPositions, boolean isObserved, String fightingICEroot) {
         this.rounds = rounds;
         this.framesPerRound = framesPerRound;
@@ -91,8 +98,7 @@ public class Fight {
         this.isObserved = isObserved;
         this.fightingICEroot = fightingICEroot;
 
-        if (!SkillLoader.isInitialized)
-        {
+        if (!SkillLoader.isInitialized) {
             SkillLoader.initialize(fightingICEroot);
         }
     }
@@ -106,8 +112,7 @@ public class Fight {
     public void setPlayer(int index, AIInterface ai, String character) {
         String aiName = ai.getClass().getName();//+ (index + 1);
 
-        if (aiName.contains("."))
-        {
+        if (aiName.contains(".")) {
             String[] split = aiName.split("\\.");
             aiName = split[split.length - 1];
         }

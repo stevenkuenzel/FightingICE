@@ -1,4 +1,4 @@
-import aitest.Xai;
+import de.stevenkuenzel.xml.XElement;
 import ftginterface.Fight;
 import ftginterface.FightResult;
 
@@ -8,19 +8,32 @@ import ftginterface.FightResult;
 public class Main {
 
     /**
-     * 起動時に入力した引数に応じて起動情報を設定し, それを基にゲームを開始する．<br>
-     * このメソッドはFightingICEのメインメソッドである．
+     * Entry point.
      *
-     * @param options 起動時に入力した全ての引数を格納した配列
+     * @param args No arguments are considered.
      */
-    public static void main(String[] options) {
+    public static void main(String[] args) {
 
 
+        // Creates an observed fight over three rounds a 3,600 frames. The initial positions of the characters are certainly random.
+        // Note that the directory where the data-folder of FightingICE is located has to be provided. Leave to "." if it is located in the working directory of the applicaiton.
+        int numOfRounds = 3;
+        Fight fight = new Fight(numOfRounds, 3600, true, true, ".");
 
-        Fight f = new Fight(3, 3600, true, true, ".");
-        f.setPlayer(0, "Toothless", "ZEN");
-        f.setPlayer(1, "Toothless", "ZEN");
+        // Set the two controllers and their respective character models.
+        fight.setPlayer(0, "MctsAi", "ZEN");
+        fight.setPlayer(1, "Thunder", "ZEN");
 
-        FightResult fr = f.run();
+        // Run the fight an retrieve the results.
+        FightResult result = fight.run();
+
+        // Print the remaining HP of the characters.
+        for (int i = 0; i < numOfRounds; i++) {
+            System.out.println("Round " + (i + 1) + ": " + result.result[0][i].remainingHP + "  <-->  " + result.result[1][i].remainingHP);
+        }
+
+        // Save the observation data of MctsAi in an XElement and export it to an XML-file in the working directory.
+        XElement observationOfMctsAi = result.observation.export(0);
+        observationOfMctsAi.save("Observation_MctsAi.xml");
     }
 }
