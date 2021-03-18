@@ -4,9 +4,16 @@ import enumerate.Action;
 
 import java.util.Arrays;
 
+/**
+ * A Skill in FightingICE.
+ */
 public class Skill {
+    /**
+     * Set of actions that are considered as movement actions.
+     */
     private static final Action[] MOVEMENT_ACTIONS = new Action[] {Action.BACK_STEP, Action.BACK_JUMP, Action.FORWARD_WALK, Action.DASH, Action.FOR_JUMP, Action.JUMP, Action.CROUCH, Action.STAND};
 
+    // Skill related information.
     public String name;
     public Action action;
 
@@ -25,6 +32,10 @@ public class Skill {
 
     public boolean isAttack, isGuard, isMovement, isProjectile;
 
+    /**
+     * Creates an instance of Skill based on a line from the FightingICE CSV-file.
+     * @param line The line from the CSV-file.
+     */
     public Skill(String line) {
         loadFromCSV(line);
     }
@@ -61,17 +72,20 @@ public class Skill {
         this.isProjectile = isProjectile;
     }
 
+    /**
+     * Creates a copy of the Skill.
+     * @return A copy of the Skill.
+     */
     public Skill copy()
     {
         return new Skill(name, action,damage,energyRequired,numOfFrames,attackLocation,xFrom,xTo,yFrom,yTo,centerX,centerY,keyCount,totalFramesFromStartToFinish,startUp,cancelAfter,attackActive,
                 isDown,speedX,speedY,attackSpeedX,attackSpeedY,isAttack,isGuard,isMovement,isProjectile);
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
-
+    /**
+     * Loads the skill information from the FightingICE CSV-file.
+     * @param line The content of a line in the CSV-file.
+     */
     private void loadFromCSV(String line) {
         String[] columns = line.split(",");
 
@@ -121,5 +135,11 @@ public class Skill {
 
         this.keyCount = (int) this.name.chars().filter(x -> x == '_').count();
         this.totalFramesFromStartToFinish = numOfFrames + keyCount;
+    }
+
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

@@ -14,8 +14,17 @@ import util.CharacterRoundData;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Creates a fight in FightingICE.
+ */
 public class Fight {
 
+    /**
+     * Returns true, if an action is of type 'Attack'.
+     *
+     * @param action The action to check.
+     * @return True, if the action is an attack.
+     */
     private static boolean isAttack(Action action) {
         for (Action attackAction : ATTACK_ACTIONS) {
             if (attackAction == action) return true;
@@ -24,62 +33,112 @@ public class Fight {
         return false;
     }
 
-    private static final Action[] ATTACK_ACTIONS = new Action[]
-            {
-                    Action.AIR_A,
-                    Action.AIR_B,
-                    Action.AIR_DA,
-                    Action.AIR_DB,
-                    Action.AIR_D_DB_BA,
-                    Action.AIR_D_DB_BB,
-                    Action.AIR_D_DF_FA,
-                    Action.AIR_D_DF_FB,
-                    Action.AIR_FA,
-                    Action.AIR_FB,
-                    Action.AIR_F_D_DFA,
-                    Action.AIR_F_D_DFB,
-                    Action.AIR_UA,
-                    Action.AIR_UB,
-                    Action.CROUCH_A,
-                    Action.CROUCH_B,
-                    Action.CROUCH_FA,
-                    Action.CROUCH_FB,
-                    Action.STAND_A,
-                    Action.STAND_B,
-                    Action.STAND_D_DB_BA,
-                    Action.STAND_D_DB_BB,
-                    Action.STAND_D_DF_FA,
-                    Action.STAND_D_DF_FB,
-                    Action.STAND_D_DF_FC,
-                    Action.STAND_FA,
-                    Action.STAND_FB,
-                    Action.STAND_F_D_DFA,
-                    Action.STAND_F_D_DFB,
-                    Action.THROW_A,
-                    Action.THROW_B
-            };
+    /**
+     * Set of attack actions.
+     */
+    private static final Action[] ATTACK_ACTIONS = new Action[]{
+            Action.AIR_A,
+            Action.AIR_B,
+            Action.AIR_DA,
+            Action.AIR_DB,
+            Action.AIR_D_DB_BA,
+            Action.AIR_D_DB_BB,
+            Action.AIR_D_DF_FA,
+            Action.AIR_D_DF_FB,
+            Action.AIR_FA,
+            Action.AIR_FB,
+            Action.AIR_F_D_DFA,
+            Action.AIR_F_D_DFB,
+            Action.AIR_UA,
+            Action.AIR_UB,
+            Action.CROUCH_A,
+            Action.CROUCH_B,
+            Action.CROUCH_FA,
+            Action.CROUCH_FB,
+            Action.STAND_A,
+            Action.STAND_B,
+            Action.STAND_D_DB_BA,
+            Action.STAND_D_DB_BB,
+            Action.STAND_D_DF_FA,
+            Action.STAND_D_DF_FB,
+            Action.STAND_D_DF_FC,
+            Action.STAND_FA,
+            Action.STAND_FB,
+            Action.STAND_F_D_DFA,
+            Action.STAND_F_D_DFB,
+            Action.THROW_A,
+            Action.THROW_B
+    };
 
-    // Basic settings.
+    /**
+     * Number of rounds.
+     */
     int rounds;
+
+    /**
+     * Number of frames per round.
+     */
     int framesPerRound;
+
+    /**
+     * Start with random initial positions?
+     */
     boolean randomInitialPositions;
+
+    /**
+     * Create a FightObservation instance for this fight?
+     */
     boolean isObserved;
 
+    /**
+     * Path of the FightingICE environment.
+     */
     String fightingICEroot;
 
-    // Players and registration.
+    /**
+     * Player instances.
+     */
     Player[] players = new Player[2];
+
+    /**
+     * Map, that stores the AI controllers to register with a given name.
+     */
     HashMap<String, AIInterface> toRegister = new HashMap<>();
 
-    // Game related.
+
+    /**
+     * Game instance.
+     */
     Game game;
+
+    /**
+     * Play scene instance.
+     */
     Play play;
+
+    /**
+     * Character instances.
+     */
     fighting.Character[] characters;
 
-    // Observation related.
+    /**
+     * Last executed action.
+     */
     Action[] lastAction = new Action[]{null, null};
+
+    /**
+     * Open StateAction (waits for an attack instance to be assigned).
+     */
     StateAction[] stateActions = new StateAction[]{null, null};
+
+    /**
+     * List of StateActions that were not evaluated (success) yet. This typically happens at the end of the round.
+     */
     ArrayList<StateAction>[] pending = new ArrayList[]{new ArrayList<StateAction>(), new ArrayList<StateAction>()};
+
+    /**
+     * Stores all StateAction instances for every action called.
+     */
     HashMap<Action, ArrayList<StateAction>>[] successData = new HashMap[]{new HashMap<Action, ArrayList<StateAction>>(), new HashMap<Action, ArrayList<StateAction>>()};
 
     /**
@@ -103,12 +162,22 @@ public class Fight {
         }
     }
 
+    /**
+     * Determines a player.
+     * @param index The player index (0 or 1).
+     * @param name The player name (name of the AI agent, e.g. ANNBot).
+     * @param character The character name (ZEN, LUD, GARNET).
+     */
     public void setPlayer(int index, String name, String character) {
-//        if (index < 0 || index > 1) throw new Exception("Invalid player id.");
-
         players[index] = new Player(index, name, character);
     }
 
+    /**
+     * Determines a player.
+     * @param index The player index (0 or 1).
+     * @param ai The AI agent instance.
+     * @param character The character name (ZEN, LUD, GARNET).
+     */
     public void setPlayer(int index, AIInterface ai, String character) {
         String aiName = ai.getClass().getName();//+ (index + 1);
 
@@ -122,21 +191,36 @@ public class Fight {
         setPlayer(index, ai, aiName, character);
     }
 
-
+    /**
+     * Determines a player. Used if the same AI agent is registered twice (with different names).
+     * @param index The player index (0 or 1).
+     * @param ai The AI agent instance.
+     * @param aiName The player name (name of the AI agent, e.g. ANNBot).
+     * @param character The character name (ZEN, LUD, GARNET).
+     */
     public void setPlayer(int index, AIInterface ai, String aiName, String character) {
         setPlayer(index, aiName, character);
         registerAIInterface(ai, aiName);
     }
 
+    /**
+     * Adds an AI agent to the registration queue.
+     * @param ai The AI agent.
+     * @param name The name it is registered with.
+     */
     private void registerAIInterface(AIInterface ai, String name) {
         toRegister.put(name, ai);
     }
 
+    /**
+     * Initializes the fight.
+     */
     private void initialize() {
-        if (players[0] == null || players[1] == null) {
+//        if (players[0] == null || players[1] == null) {
 //            throw new Exception("Players are not initialized. Use setPlayer(..) twice before initialize().");
-        }
+//        }
 
+        // Create the Game instance and take the necessary settings.
         game = new Game(fightingICEroot, players[0].name, players[1].name, new CharacterDiskInformation(fightingICEroot));
         game.setCharacterNames(players[0].character, players[1].character);
         game.randomInitialPositions = randomInitialPositions;
@@ -152,10 +236,15 @@ public class Fight {
 
         toRegister.clear();
 
+        // Call the internal initalization.
         game.initialize();
     }
 
 
+    /**
+     * Runs the fight until termination.
+     * @return The result of the fight.
+     */
     public FightResult run() {
         initialize();
 
@@ -181,10 +270,17 @@ public class Fight {
         return new FightResult(getRoundData(), isObserved ? getObservation() : null);
     }
 
+    /**
+     * Returns the observation of the fight, if recorded.
+     */
     private FightObservation getObservation() {
         return new FightObservation(players[0].name, players[1].name, successData);
     }
 
+    /**
+     * Observes the current frame.
+     * @param roundEnd Is the current round finished?
+     */
     private void observe(boolean roundEnd) {
         observe(0, roundEnd);
         observe(1, roundEnd);
@@ -199,6 +295,11 @@ public class Fight {
         }
     }
 
+    /**
+     * Observes the character with the given id in the current frame.
+     * @param id The character id (0 or 1).
+     * @param roundEnd Is the current round finished?
+     */
     private void observe(int id, boolean roundEnd) {
         Character character = characters[id];
         Character opponent = characters[(id + 1) % 2];
@@ -282,6 +383,11 @@ public class Fight {
         }
     }
 
+    /**
+     * Returns true, if two succeeding actions are somehow related to the other.
+     * @param action1 The first action.
+     * @param action2 The second (following) action.
+     */
     private boolean isRelationBetweenTwoActions(Action action1, Action action2) {
         if (action1 == null) return false;
 

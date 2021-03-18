@@ -8,10 +8,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
+/**
+ * Observation of a fight.
+ */
 public class FightObservation {
+    /**
+     * The player names.
+     */
     String name1, name2;
+
+    /**
+     * The list of successful attacks for each player.
+     */
     HashMap<Action, ArrayList<StateAction>> p1Success, p2Success;
 
+    /**
+     * Creates a new instance of FightObservation.
+     */
     public FightObservation(String name1, String name2, HashMap<Action, ArrayList<StateAction>>[] successData) {
         this.name1 = name1;
         this.name2 = name2;
@@ -54,6 +67,11 @@ public class FightObservation {
         }
     }
 
+    /**
+     * Exports the success data into an XElement for the player with the given id.
+     * @param id The player id (0 or 1).
+     * @return The XElement.
+     */
     public XElement export(int id) {
 
         if (p1Success != null && id == 0) return export(name1, name2, p1Success);
@@ -62,6 +80,9 @@ public class FightObservation {
         return null;
     }
 
+    /**
+     * Creates an XElement containing the success data.
+     */
     private XElement export(String controllerName, String opponentName, HashMap<Action, ArrayList<StateAction>> samples) {
         ArrayList<Action> sortedKeys = new ArrayList<>(samples.keySet());
         sortedKeys.sort(Comparator.comparingInt(Enum::ordinal));
