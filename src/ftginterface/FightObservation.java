@@ -89,12 +89,12 @@ public class FightObservation {
 
         // Export the raw information for postprocessing and reuse.
 
-        XElement xRaw = new XElement("StateActions", new XAttribute("Name", controllerName), new XAttribute("Opponent", opponentName));
+        XElement xRaw = new XElement("StateActions", new XAttribute<>("Name", controllerName), new XAttribute<>("Opponent", opponentName));
 
         for (Action action : sortedKeys) {
             ArrayList<StateAction> data = samples.get(action);
 
-            XElement xAction = xRaw.addChild("Action", new XAttribute("Name", action.name()));
+            XElement xAction = xRaw.addChild("Action", new XAttribute<>("Name", action.name()));
 
             for (StateAction stateAction : data) {
                 xAction.addChild(stateAction.toXElement());
